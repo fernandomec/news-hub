@@ -1,4 +1,4 @@
-#APLICAÇÃO AINDA EM DESENVOLVIMENTO!!! INCOMPLETA
+# APLICAÇÃO AINDA EM DESENVOLVIMENTO!!! INCOMPLETA
 # News Hub
 
 Bem-vindo ao News Hub! Este é um projeto de Programação Web de um site de notícias feito em Node.js, Express, Prisma e Postgres. É uma aplicação baseada em Roles com [SUPER_ADMIN, ADMIN, EDITOR, USER] e autenticação com JWT.
