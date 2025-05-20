@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header', { user: user }) %>
+
+    <main class="main-content">
+        <div class="profile-container">
+            <img src="<%= user.profileImageUrl || '/imgs/account-icon.png' %>" alt="Profile" class="profile-image">
+            <h1 class="profile-name"><%= user.username %></h1>
+
+            <% if (typeof messages !== 'undefined' && messages.error) { %>
+                <div class="mensagem-feedback erro-feedback"><%= messages.error %></div>
+            <% } %>
+            <% if (typeof messages !== 'undefined' && messages.success) { %>
+                <div class="mensagem-feedback sucesso-feedback"><%= messages.success %></div>
+            <% } %>
+
+            <form id="editForm" action="/user-edit" method="POST">
+                <div class="profile-info">
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span><%= user.email %></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Nome completo:</span>
+                        <input type="text" name="username" value="<%= user.username %>" required>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Telefone:</span>
+                        <input type="tel" name="tel" value="<%= user.tel || '' %>" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Nova Senha:</span>
+                        <div class="password-input-container">
+                            <input type="password" name="newPassword" id="newPassword">
+                            <span class="material-symbols-outlined toggle-password-icon" data-target="newPassword" title="Mostrar/Ocultar senha">visibility</span>
+                        </div>
+                    </div>
+                    <small class="form-text-info">Deixe em branco caso queira manter a mesma senha</small>
+                    <div class="info-row">
+                        <small class="password-requirements">
+                            <div class="requirement invalid" data-req-type="length">A senha deve conter: 8-20 caracteres</div>
+                            <div class="requirement invalid" data-req-type="number">• Pelo menos 1 número</div>
+                            <div class="requirement invalid" data-req-type="special">• Pelo menos 1 caractere especial (!, @, #, $, %, ^, &, *)</div>
+                        </small>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">CEP:</span>
+                        <input type="text" name="cep" id="cep" placeholder="00000-000" value="<%= user.cep || '' %>">
+                    </div>
+                    <div class="info-row">
+                        <small class="cep-requirements">
+                            <div class="requirement invalid" data-req-type="cepLength">• 8 números</div>
+                        </small>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Bairro:</span>
+                        <input type="text" name="bairro" id="bairro" value="<%= user.bairro || '' %>">
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">Endereço:</span>
+                        <input type="text" name="endereco" id="endereco" value="<%= user.endereco || '' %>">
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Complemento:</span>
+                        <input type="text" name="enderecoComplemento" value="<%= user.enderecoComplemento || '' %>">
+                    </div>
+
+                    <div class="password-confirm">
+                        <div class="info-row">
+                            <span class="info-label">Confirme sua senha atual:</span>
+                            <div class="password-input-container">
+                                <input type="password" name="currentPassword" id="currentPassword" required>
+                                <span class="material-symbols-outlined toggle-password-icon" data-target="currentPassword" title="Mostrar/Ocultar senha">visibility</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/user" class="back-button">Voltar ao Perfil</a>
+                    <button type="submit" class="edit-button">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    
+    <script src="/js/password-toggle.js"></script>
+    <script src="/js/cep.js"></script>
+    <script src="/js/senhaRegistro.js"></script><!--js para verificar se a senha atende aos requisitos-->
+    <!-- Se quiser validação de senha para 'newPassword' como na página de registro: -->
+    <!-- Nota: senhaRegistro.js atualmente busca por id="password". Para reutilizar,
+         você precisaria modificar senhaRegistro.js para aceitar um ID de input como parâmetro,
+         ou duplicar/adaptar a lógica para o campo 'newPassword'.
+         Para uma solução simples e imediata, se for incluir, certifique-se que o campo
+         de nova senha tenha id="password" ou ajuste o script.
+         Como o campo é id="newPassword", o script senhaRegistro.js não funcionará nele sem modificação.
+         A validação de senha no lado do servidor (em src/routes/index.js) é a mais crucial.
+    -->
+</body>
+</html>

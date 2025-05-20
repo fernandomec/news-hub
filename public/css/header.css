@@ -8,7 +8,6 @@
     position: relative;
 }
 
-/*logotipo*/
 .logo-container {
     position: absolute;
     left: 50%;
@@ -78,17 +77,22 @@
 /*sidebar*/
 .sidebar {
     position: fixed;
-    top: 0;
-    left: -300px;
+    top: 65px;
+    height: calc(100vh - 65px); 
+    left: -300px;/*iniciar fora*/
     width: 300px;
-    height: 100%;
     background-color: #f4f4f4;
     color: #333;
-    padding-top: 60px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    padding-top: 20px;
+    box-shadow: 0px 2px 15px rgba(0,0,0,0.3);
     transition: left 0.3s ease;
     z-index: 999;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    
 }
 
 .sidebar ul {
@@ -120,6 +124,7 @@
     border: 0;
     border-top: 1px solid #ddd;
     margin: 10px 0;
+    width: 100%;
 }
 
 /*mostra o sidebar quando o checkbox está marcado*/
@@ -167,11 +172,25 @@
     margin-right: 8px;
 }
 
-.search-button-text {
-    /*estado padrão, visível em desktop*/
+.user-container-sidebar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+    flex-shrink: 0;
 }
 
-/*container do usuário*/
+.user-container-sidebar a {
+    color: red;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.user-container-sidebar a:hover {
+    text-decoration: none;
+}
+
 .user-container {
     display: flex;
     align-items: center;
@@ -190,12 +209,41 @@
 .user-container a:hover {
     text-decoration: none;
 }
+#login-maior{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+#login-menor{
+    color: gray;
+    font-size: 10px;
+}
+
+.user-link-sidebar{
+    display: flex;
+    flex-direction: column;
+}
 
 /*responsividade*/
 
 /*para telas menores*/
 @media (max-width: 1175px) {
+    .sidebar {
+        position: fixed;
+        top: 153px;
+        height: calc(100vh - 153px); 
+        left: -300px;/*iniciar fora*/
+        width: 300px;
+        background-color: #f4f4f4;
+        color: #333;
+        padding-top: 20px;
+        box-shadow: 0px 2px 15px rgba(0,0,0,0.3);
+        transition: left 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+
     .container-header {
         flex-wrap: wrap;
         padding: 10px;

@@ -5,18 +5,18 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
-// Express
+//express
 const app = express();
 
-// Prisma client
+//prisma client
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// EJS template engine
+//EJS template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares
+//middlewares
 app.use(express.urlencoded({ extended: true })); // formulários
 app.use(express.json()); // JSON
 app.use(express.static(path.join(__dirname, '..', 'public'))); // public
@@ -24,7 +24,7 @@ app.use(cookieParser());
 const { authMiddleware, checkUser } = require('./middleware/auth');
 app.use(checkUser);
 
-// Middleware para disponibilizar categorias em todas as views
+//middleware para disponibilizar categorias em todas as views
 app.use(async (req, res, next) => {
   try {
     const categorias = await prisma.categoria.findMany({
@@ -43,7 +43,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Rota para servir imagens diretamente do banco de dados
+//rota pra imagens diretamente no banco de dados
 app.get('/imagem/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
@@ -64,7 +64,7 @@ app.get('/imagem/:id', async (req, res) => {
   }
 });
 
-// Servidor
+//servidor
 const PORT = process.env.PORT;
 
 async function main() {
@@ -85,31 +85,33 @@ main();
 const rotasIndex = require('./routes/index');
 
 // Aplicando rotas
-app.use('/', rotasIndex);
+app.use('/', rotasIndex); //agora /login, /register, etc., serão tratadas por rotasIndex
 
 //home
 app.get('/', async (req, res) => {
   try {
-    const empresas = await prisma.empresa.findMany({
+    //alterado de 'empresa' para 'noticia' para alinhar com o schema
+    const noticias = await prisma.noticia.findMany({
+      where: { publicado: true }, //exemplo: buscar apenas notícias publicadas
       include: {
-        bannerImagem: true, //inclui os dados da imagem do banner
+        imagem: true, //inclui os dados da imagem da notícia (se houver relação 'imagem' em 'Noticia')
+        autor: { //exemplo: incluir nome do autor
+          select: {
+            username: true
+          }
+        }
       },
+      orderBy: {
+        dataPublicacao: 'desc' //exemplo: ordenar por data de publicação
+      },
+      take: 10 //exemplo: pegar as 10 mais recentes
     });
-    res.render('home', { user: res.locals.user, empresas: empresas });
+    //a view 'home.ejs' precisará ser atualizada para usar 'noticias' em vez de 'empresas'
+    res.render('home', { user: res.locals.user, noticias: noticias });
   } catch (error) {
-    console.error('Erro ao buscar empresas:', error);
-    res.render('home', { user: res.locals.user, empresas: [] });
+    console.error('erro ao buscar notícias:', error);
+    res.render('home', { user: res.locals.user, noticias: [] });
   }
-});
-
-//sobre
-app.get('/about', (req, res) => {
-  res.render('about', { user: res.locals.user });
-});
-
-//contato
-app.get('/contact', (req, res) => {
-  res.render('contact', { user: res.locals.user });
 });
 
 //404

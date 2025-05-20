@@ -133,7 +133,7 @@ input[type="password"]:focus {
     padding-right: 45px;
 }
 
-.toggle-password {
+.toggle-password-icon {
     position: absolute;
     right: 15px;
     top: 50%;
@@ -143,8 +143,8 @@ input[type="password"]:focus {
     color: #777;
     font-size: 22px;
 }
-.toggle-password:hover {
-    color: #0b1863;
+.toggle-password-icon:hover {
+    color: #c4170c;
 }
 
 .forgot-password {

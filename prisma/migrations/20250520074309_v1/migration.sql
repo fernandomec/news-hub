@@ -216,7 +216,7 @@ ALTER TABLE "AcessoNoticia" ADD CONSTRAINT "AcessoNoticia_noticiaId_fkey" FOREIG
 ALTER TABLE "AcessoNoticia" ADD CONSTRAINT "AcessoNoticia_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "Usuario"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SenhaAnterior" ADD CONSTRAINT "SenhaAnterior_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "Usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SenhaAnterior" ADD CONSTRAINT "SenhaAnterior_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "Usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CategoriaToNoticia" ADD CONSTRAINT "_CategoriaToNoticia_A_fkey" FOREIGN KEY ("A") REFERENCES "Categoria"("id") ON DELETE CASCADE ON UPDATE CASCADE;

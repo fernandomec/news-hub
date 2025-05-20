@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "fernandomec, Henrique e Gabriel",
+  "author": "Fernandomec, Henrique e Gabriel",
   "license": "ISC",
   "description": "",
   "dependencies": {

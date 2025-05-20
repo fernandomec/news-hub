@@ -18,14 +18,17 @@
         <form id="loginForm" action="/login" method="POST">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="<%= typeof email !== 'undefined' ? email : '' %>" required>
             </div>
             
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-input-container">
                     <input type="password" id="password" name="password" required>
-                    <span class="material-symbols-outlined toggle-password" user-select: none></span>
+                    <span class="material-symbols-outlined toggle-password-icon" 
+                          data-target="password" 
+                          title="Mostrar senha" 
+                          style="user-select: none;">visibility</span>
                 </div>
             </div>
             
@@ -36,15 +39,27 @@
             <button type="submit">Entrar</button>
         </form>
 
-
         <p class="register-link">Não possui conta? <a href="/register">Registre-se</a></p>
-        <!-- divs para mensagens -->
-        <div id="errorMessage" class="message error hidden"></div>
-        <div id="successMessage" class="message success hidden"></div>
+        
+        <% if (typeof errors !== 'undefined' && errors && errors.length > 0) { %>
+            <div id="errorMessage" class="message error">
+                <% errors.forEach(function(errorMsg) { %>
+                    <p><%= errorMsg %></p>
+                <% }); %>
+            </div>
+        <% } else { %>
+            <div id="errorMessage" class="message error hidden"></div>
+        <% } %>
+        
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div id="successMessage" class="message success">
+                <p><%= success %></p>
+            </div>
+        <% } else { %>
+            <div id="successMessage" class="message success hidden"></div>
+        <% } %>
     </div>
 
-    <script src="/js/loginForm.js"></script>
-    <script src="/js/password-toggle.js"></script>
-    <script src="/js/authRequests.js"></script>
+    <script src="/js/password-toggle.js"></script><!--js para exibir emoji de um olho abrindo e fechando para ocultar ou deixar visivel senha ao digitar-->
 </body>
 </html>

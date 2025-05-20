@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="/css/header.css">
 <link rel="stylesheet" href="/css/style.css">
 
-
 <header class="site-header">
     <div class="container-header">
         <input type="checkbox" id="nav-toggle" class="nav-toggle">
@@ -20,24 +19,20 @@
             </a>
         </div>
 
-        
-
         <div class="search-container">
-            <input type="text" placeholder="O que você procura?" class="search-input">
+            <input type="text" placeholder="Digite aqui" class="search-input">
             <button type="submit" class="search-button">
                 <span class="material-symbols-outlined">search</span>
                 <span class="search-button-text">BUSCAR</span>
             </button>
         </div>
+
         <div class="user-container">
             <% if (typeof user !== 'undefined' && user) { %>
                 <a href="/user" class="user-link">
                     <span class="material-symbols-outlined">person</span>
                     PERFIL
                 </a>
-                <% if (user.role === 'ADMIN' || 'SUPER_ADMIN' || 'EDITOR' ) { %>
-                    <a href="/admin">Admin</a>
-                <% } %>
                 <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
                     <span class="material-symbols-outlined icone-logout">logout</span>
                     <span class="texto-logout">Sair</span>
@@ -50,18 +45,67 @@
             <% } %>
         </div>
         
-        
         <nav class="sidebar">
+            <div class="user-container-sidebar">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <a href="/user" class="user-link">
+                        <span class="material-symbols-outlined">person</span>
+                        PERFIL
+                    </a>
+                    <% if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' || user.role === 'EDITOR' ) { %>
+                        <a href="/admin">Admin</a>
+                    <% } %>
+                    <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
+                        <span class="material-symbols-outlined icone-logout">logout</span>
+                        <span class="texto-logout">Sair</span>
+                    </a>
+                <% } else { %>
+                    <a href="/login" class="user-link-sidebar">
+                        <div id="login-maior">
+                            <span class="material-symbols-outlined">person</span>
+                            Acesse sua conta
+                        </div>
+                        <span id="login-menor">ou cadastre-se grátis</span>
+                    </a>
+                <% } %>
+            </div>
+            
+
             <h3>Categorias</h3>
             <ul>
-                <li><a href="#">{categoria.categoria}</a></li>
+                <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+                    <% categorias.forEach(categoria => { %>
+                        <li><a href="/noticias/categoria/<%= categoria.slug %>"><%= categoria.nome %></a></li>
+                    <% }); %>
+                <% } else { %>
+                    <li>Nenhuma categoria disponível</li>
+                <% } %>
             </ul>
-            <hr>
-            <h3>QUALQUER COISA</h3>
+            
+
+            <h3>Em Alta</h3>
             <ul>
-                <li><a href="#"></a></li>
+                <% if (typeof noticiasEmAlta !== 'undefined' && noticiasEmAlta.length > 0) { %>
+                    <%// noticiasEmAlta.forEach(noticia => { %>
+                        <%// }); %>
+                <% } else { %>
+                    <li><a href="#">n/a</a></li>
+                    <% } %>
+            </ul>
+            
+
+            <h3>Notícias mais lidas</h3>
+            <ul>
+                <% if (typeof noticiasMaisLidas !== 'undefined' && noticiasMaisLidas.length > 0) { %>
+                    <%// noticiasMaisLidas.forEach(noticia => { %>
+                        <%// }); %>
+                <% } else { %>
+                    <li><a href="#">n/a</a></li>
+                    <% } %>
             </ul>
         </nav>
     </div>
-    
 </header>
+
+<script src="/js/logout.js"></script>
+<script src="/js/sidebar.js"></script>
