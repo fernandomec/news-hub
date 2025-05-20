@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<header class="site-header">
+    <div class="container-header">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <label for="nav-toggle" class="nav-toggle-label">
+            <div class="span-nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            MENU
+        </label>
+
+        <div class="logo-container">
+            <a href="/">
+                <img src="/imgs/logo.png" alt="Logo" class="logo">
+            </a>
+        </div>
+
+        
+
+        <div class="search-container">
+            <input type="text" placeholder="O que você procura?" class="search-input">
+            <button type="submit" class="search-button">
+                <span class="material-symbols-outlined">search</span>
+                <span class="search-button-text">BUSCAR</span>
+            </button>
+        </div>
+        <div class="user-container">
+            <% if (typeof user !== 'undefined' && user) { %>
+                <a href="/user" class="user-link">
+                    <span class="material-symbols-outlined">person</span>
+                    PERFIL
+                </a>
+                <% if (user.role === 'ADMIN' || 'SUPER_ADMIN' || 'EDITOR' ) { %>
+                    <a href="/admin">Admin</a>
+                <% } %>
+                <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
+                    <span class="material-symbols-outlined icone-logout">logout</span>
+                    <span class="texto-logout">Sair</span>
+                </a>
+            <% } else { %>
+                <a href="/login" class="user-link">
+                    <span class="material-symbols-outlined">person</span>
+                    LOGIN
+                </a>
+            <% } %>
+        </div>
+        
+        
+        <nav class="sidebar">
+            <h3>Categorias</h3>
+            <ul>
+                <li><a href="#">{categoria.categoria}</a></li>
+            </ul>
+            <hr>
+            <h3>QUALQUER COISA</h3>
+            <ul>
+                <li><a href="#"></a></li>
+            </ul>
+        </nav>
+    </div>
+    
+</header>

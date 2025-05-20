@@ -1,0 +1,247 @@
+.container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #c4170c;
+    color: white;
+    position: relative;
+}
+
+/*logotipo*/
+.logo-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.logo {
+    height: 40px;
+    filter: brightness(0) invert(1);
+}
+
+/*botão de menu hamburguer*/
+.nav-toggle {
+    display: none;
+}
+
+.nav-toggle-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+.nav-toggle-label span {
+    display: block;
+    background-color: white;
+    height: 3px;
+    width: 25px;
+    margin: 4px 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.span-nav-toggle:hover {
+    scale: 1.1;
+    transition: transform 0.3s ease;
+}
+
+
+/*animação do hambúrguer ao passar o mouse (hover)*/
+.nav-toggle:hover ~ .nav-toggle-label span:nth-child(1) {
+    transform: translateX(-7px) translateY(7px) rotate(90deg);
+}
+
+.nav-toggle:hover ~ .nav-toggle-label span:nth-child(2) {
+    transform: translateX(0px) translateY(0px) rotate(90deg);
+}
+
+.nav-toggle:hover ~ .nav-toggle-label span:nth-child(3) {
+    transform: translateX(7px) translateY(-7px) rotate(90deg);
+}
+
+/*animação do hambúrguer quando selecionado (checked)*/
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/*sidebar*/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #f4f4f4;
+    color: #333;
+    padding-top: 60px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.sidebar ul li .arrow {
+    color: #c4170c;
+    font-weight: bold;
+}
+
+.sidebar hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+/*mostra o sidebar quando o checkbox está marcado*/
+.nav-toggle:checked ~ .sidebar {
+    left: 0;
+}
+
+/*container de busca, input e botão*/
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+    color: #333;
+}
+.search-input::placeholder {
+    color: #777;
+}
+
+
+.search-button {
+    display: flex;
+    align-items: center;
+    background-color: #a90f06;
+    color: white;
+    padding: 9px 15px;
+    text-decoration: none;
+    border-radius: 0 4px 4px 0;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    height: 37px;
+}
+
+.search-button .material-symbols-outlined {
+    margin-right: 8px;
+}
+
+.search-button-text {
+    /*estado padrão, visível em desktop*/
+}
+
+/*container do usuário*/
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+.user-container a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.user-container a:hover {
+    text-decoration: none;
+}
+
+
+/*responsividade*/
+
+/*para telas menores*/
+@media (max-width: 1175px) {
+    .container-header {
+        flex-wrap: wrap;
+        padding: 10px;
+        justify-content: flex-start;
+    }
+
+    .nav-toggle-label {
+        order: 1;
+    }
+
+    .logo-container {
+        position: static;
+        left: auto;
+        top: auto;
+        transform: none;
+        order: 2;
+        flex-grow: 1;
+        text-align: center;
+        margin-left: 10px;
+    }
+    
+    .search-container {
+        order: 3;
+        width: 100%;
+        margin-top: 10px;
+        margin-left: 0;
+        max-width: none;
+    }
+
+    .search-button .search-button-text {
+        display: none;
+    }
+
+    .search-button .material-symbols-outlined {
+        margin-right: 0;
+    }
+     .search-button {
+        padding: 10px;
+        height: auto;
+    }
+
+    .user-container {
+        order: 4;
+        width: 100%;
+        margin-top: 10px;
+        margin-left: 0;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Não Encontrada - News Hub</title>
+    <link rel="stylesheet" href="/css/style.css"> <link rel="stylesheet" href="/css/404.css"> <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="container-404">
+        <div class="content-404">
+            <span class="material-symbols-outlined icon-404">
+                sentiment_very_dissatisfied
+            </span>
+            <h1 class="title-404">Página não encontrada.</h1>
+            <p class="text-404">
+                Parece que o link que você seguiu não existe ou a página foi removida.
+            </p>
+            <p class="text-404">
+                Volte para a página inicial:
+            </p>
+            <a href="/" class="btn-home-404">
+                <span class="material-symbols-outlined">home</span>
+                Ir para a Home
+            </a>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

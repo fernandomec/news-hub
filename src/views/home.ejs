@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - News Hub</title>
+    <link rel="shortcut icon" href="imgs/shortcut.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <section class="em-alta">
+            <h3></h3>
+        </section>
+
+
+
+        </section>
+        <!-- Seção de Destaques -->
+        <section class="destaques-section">
+            <div class="container">
+                <h3 class="section-title">Notícias em Destaque</h3>
+                <div class="destaques-grid">
+                    <% if (typeof destaques !== 'undefined' && destaques.length > 0) { %>
+                        <% destaques.forEach((destaque, index) => { %>
+                            <div class="destaque-card <%= index === 0 ? 'destaque-principal' : '' %>">
+                                <a href="/noticias/<%= destaque.slug %>" class="destaque-link">
+                                    <% if (destaque.imagem) { %>
+                                        <div class="destaque-img">
+                                            <img src="/imagem/<%= destaque.imagem.id %>" alt="<%= destaque.titulo %>">
+                                        </div>
+                                    <% } else { %>
+                                        <div class="destaque-img no-image">
+                                            <span class="material-symbols-outlined">image_not_supported</span>
+                                        </div>
+                                    <% } %>
+                                    <div class="destaque-content">
+                                        <h3 class="destaque-title"><%= destaque.titulo %></h3>
+                                        <p class="destaque-excerpt"><%= destaque.resumo %></p>
+                                        <div class="destaque-meta">
+                                            <span class="autor">Por <%= destaque.autor.username %></span>
+                                            <% if (destaque.categorias && destaque.categorias.length > 0) { %>
+                                                <span class="categoria"><%= destaque.categorias[0].nome %></span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-content">
+                            <p>Nenhuma notícia em destaque disponível no momento.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Notícias Mais Lidas -->
+        <section class="mais-lidas-section">
+            <div class="container">
+                <h3 class="section-title">Mais Lidas</h3>
+                <div class="mais-lidas-grid">
+                    <% if (typeof maisLidas !== 'undefined' && maisLidas.length > 0) { %>
+                        <% maisLidas.forEach((noticia, index) => { %>
+                            <div class="mais-lida-card">
+                                <span class="mais-lida-numero"><%= index + 1 %></span>
+                                <a href="/noticias/<%= noticia.slug %>" class="mais-lida-link">
+                                    <% if (noticia.imagem) { %>
+                                        <div class="mais-lida-img">
+                                            <img src="/imagem/<%= noticia.imagem.id %>" alt="<%= noticia.titulo %>">
+                                        </div>
+                                    <% } %>
+                                    <h3 class="mais-lida-title"><%= noticia.titulo %></h3>
+                                </a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-content">
+                            <p>Nenhuma notícia popular disponível no momento.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Categorias -->
+        <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+            <% categorias.forEach(categoria => { %>
+                <% if (categoria.noticias && categoria.noticias.length > 0) { %>
+                    <section class="categoria-section">
+                        <div class="container">
+                            <h3 class="section-title">
+                                <a href="/noticias/categoria/<%= categoria.slug %>" class="categoria-link">
+                                    <%= categoria.nome %>
+                                </a>
+                            </h3>
+                            <div class="categoria-grid">
+                                <% categoria.noticias.forEach(noticia => { %>
+                                    <div class="categoria-card">
+                                        <a href="/noticias/<%= noticia.slug %>" class="categoria-card-link">
+                                            <% if (noticia.imagem) { %>
+                                                <div class="categoria-card-img">
+                                                    <img src="/imagem/<%= noticia.imagem.id %>" alt="<%= noticia.titulo %>">
+                                                </div>
+                                            <% } %>
+                                            <h3 class="categoria-card-title"><%= noticia.titulo %></h3>
+                                        </a>
+                                    </div>
+                                <% }); %>
+                            </div>
+                            <a href="/noticias/categoria/<%= categoria.slug %>" class="ver-mais">Ver mais notícias de <%= categoria.nome %></a>
+                        </div>
+                    </section>
+                <% } %>
+            <% }); %>
+        <% } %>
+
+        <!-- Seção de busca -->
+        <section class="busca-section">
+            <div class="container">
+                <h3 class="section-title">Buscar Notícias</h3>
+                <form action="/busca" method="get" class="busca-form">
+                    <div class="busca-input-group">
+                        <input type="text" name="q" placeholder="O que você procura?" class="busca-input">
+                        <button type="submit" class="busca-button">
+                            <span class="material-symbols-outlined">search</span>
+                            Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+
+    <%- include('partials/footer') %>
+</body>
+</html>
