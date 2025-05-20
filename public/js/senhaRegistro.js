@@ -1,16 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const passwordInput = document.getElementById('password');
-    const requirements = {
-        length: document.querySelector('.requirement[data-req-type="length"]'),
-        number: document.querySelector('.requirement[data-req-type="number"]'),
-        special: document.querySelector('.requirement[data-req-type="special"]'),
-    };
+    function initializePasswordValidation(passwordFieldId, requirementsListSelector) {
+        const passwordInput = document.getElementById(passwordFieldId);
+        const requirementsList = document.querySelector(requirementsListSelector);
 
-    if (passwordInput && requirements.length && requirements.number && requirements.special) {
+        if (!passwordInput) {
+            return;
+        }
+        if (!requirementsList) {
+            return;
+        }
+
+        const requirements = {
+            length: requirementsList.querySelector('.requirement[data-req-type="length"]'),
+            number: requirementsList.querySelector('.requirement[data-req-type="number"]'),
+            special: requirementsList.querySelector('.requirement[data-req-type="special"]'),
+        };
+
+        if (!requirements.length || !requirements.number || !requirements.special) {
+            return;
+        }
+
         passwordInput.addEventListener('input', function () {
             const value = this.value;
 
-            //tamanho check (8-20 characters)
             if (value.length >= 8 && value.length <= 20) {
                 requirements.length.classList.remove('invalid');
                 requirements.length.classList.add('valid');
@@ -19,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 requirements.length.classList.add('invalid');
             }
 
-            //numero check
             if (/\d/.test(value)) {
                 requirements.number.classList.remove('invalid');
                 requirements.number.classList.add('valid');
@@ -28,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 requirements.number.classList.add('invalid');
             }
 
-            //caractere especial check
             if (/[!@#$%^&*]/.test(value)) {
                 requirements.special.classList.remove('invalid');
                 requirements.special.classList.add('valid');
@@ -38,4 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    initializePasswordValidation('password', '#registerForm .password-requirements');
+    initializePasswordValidation('newPassword', '#editForm .new-password-requirements');
 });

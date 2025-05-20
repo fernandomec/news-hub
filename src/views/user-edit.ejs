@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil</title>
+    <link rel="shortcut icon" href="/imgs/SHORTCUTT.png">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/user.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
@@ -49,7 +50,8 @@
                     </div>
                     <small class="form-text-info">Deixe em branco caso queira manter a mesma senha</small>
                     <div class="info-row">
-                        <small class="password-requirements">
+                        <!-- Added a specific container class "new-password-requirements-container" -->
+                        <small class="password-requirements new-password-requirements-container">
                             <div class="requirement invalid" data-req-type="length">A senha deve conter: 8-20 caracteres</div>
                             <div class="requirement invalid" data-req-type="number">• Pelo menos 1 número</div>
                             <div class="requirement invalid" data-req-type="special">• Pelo menos 1 caractere especial (!, @, #, $, %, ^, &, *)</div>
@@ -104,15 +106,16 @@
     
     <script src="/js/password-toggle.js"></script>
     <script src="/js/cep.js"></script>
-    <script src="/js/senhaRegistro.js"></script><!--js para verificar se a senha atende aos requisitos-->
-    <!-- Se quiser validação de senha para 'newPassword' como na página de registro: -->
-    <!-- Nota: senhaRegistro.js atualmente busca por id="password". Para reutilizar,
-         você precisaria modificar senhaRegistro.js para aceitar um ID de input como parâmetro,
-         ou duplicar/adaptar a lógica para o campo 'newPassword'.
-         Para uma solução simples e imediata, se for incluir, certifique-se que o campo
-         de nova senha tenha id="password" ou ajuste o script.
-         Como o campo é id="newPassword", o script senhaRegistro.js não funcionará nele sem modificação.
-         A validação de senha no lado do servidor (em src/routes/index.js) é a mais crucial.
-    -->
+    <script src="/js/senhaRegistro.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize for the newPassword field on the edit page
+            initializePasswordValidation('newPassword', '.new-password-requirements-container');
+            
+            // If you also want to validate the 'currentPassword' field (though it doesn't show requirements visually by default)
+            // you could add similar HTML for its requirements and call:
+            // initializePasswordValidation('currentPassword', '.current-password-requirements-container');
+        });
+    </script>
 </body>
 </html>

@@ -59,11 +59,6 @@ router.post('/register', async (req, res) => {
         if (existingUserByEmail) {
             errors.push('este e-mail já está em uso.');
         }
-        //opcional: verificar username existente
-        //const existingUserByUsername = await prisma.usuario.findFirst({ where: { username } });
-        //if (existingUserByUsername) {
-        //    errors.push('este nome de usuário já está em uso.');
-        //}
 
         if (errors.length > 0) {
             return res.status(400).render('register', { errors, success: null, username, email, user: res.locals.user });
@@ -134,7 +129,7 @@ router.post('/login', async (req, res) => {
 });
 
 //rota de logout
-router.post('/logout', (req, res) => { //mudado de get para post
+router.post('/logout', (req, res) => {
     res.cookie('jwt', '', { maxAge: 1, httpOnly: true }); //expira o cookie e httpOnly
     res.status(200).json({ success: true, message: 'logout bem-sucedido' }); //envia resposta json
 });
@@ -160,27 +155,12 @@ router.post('/forgot-password', async (req, res) => {
         const usuario = await prisma.usuario.findUnique({ where: { email } });
 
         if (!usuario) {
-            //não informar se o e-mail existe ou não por segurança, mas para fins de teste/desenvolvimento:
-            //errors.push('nenhum usuário encontrado com este e-mail.');
-            //em produção, é melhor uma mensagem genérica:
             success = 'se um usuário com este e-mail existir, um link de redefinição será enviado.';
             return res.status(200).render('forgot-password', { errors, success, email, user: res.locals.user });
         }
-
-        //lógica para gerar token de reset e enviar e-mail (simulado)
-        //const resetToken = crypto.randomBytes(32).toString('hex');
-        //const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        //await prisma.usuario.update({
-        //    where: { email },
-        //    data: {
-        //        passwordResetToken: hashedResetToken,
-        //        passwordResetExpires: new Date(Date.now() + 10 * 60 * 1000) //10 minutos
-        //    }
-        //});
-        //console.log(`link de reset para ${email}: /reset-password/${resetToken}`); //simulação
         
         success = 'se um usuário com este e-mail existir, um link de redefinição de senha foi enviado.';
-        //aqui você implementaria o envio de e-mail com o link contendo o resetToken
+
         
         res.status(200).render('forgot-password', { errors: null, success, email: '', user: res.locals.user });
 

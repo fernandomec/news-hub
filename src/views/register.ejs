@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
+    <link rel="shortcut icon" href="/imgs/SHORTCUTT.png">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/login_register.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
@@ -68,5 +69,10 @@
     
     <script src="/js/password-toggle.js"></script><!--js para exibir emoji de um olho abrindo e fechando para ocultar ou deixar visivel senha ao digitar-->
     <script src="/js/senhaRegistro.js"></script><!--js para verificar se a senha atende aos requisitos-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initializePasswordValidation('password', '.password-requirements');
+        });
+    </script>
 </body>
 </html>

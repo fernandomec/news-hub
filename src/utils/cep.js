@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const cepInput = document.getElementById('cep');
     const enderecoInput = document.getElementById('endereco');
     const bairroInput = document.getElementById('bairro');
-    // Adicione outros campos se necessário, ex: cidade, estado
     // const cidadeInput = document.getElementById('cidade');
     // const estadoInput = document.getElementById('estado');
 
@@ -27,17 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Você pode adicionar aqui um feedback visual ou focar no próximo campo
                     } else {
                         console.warn('CEP não resultou em endereço (ViaCEP retornou erro).');
-                        // Limpar campos ou mostrar mensagem de erro seletivamente
                         // if (enderecoInput) enderecoInput.value = '';
                         // if (bairroInput) bairroInput.value = '';
                     }
                 } catch (error) {
                     console.error('Erro ao buscar CEP:', error);
-                    // Tratar erro, talvez mostrar mensagem ao usuário
                 }
             } else if (cep.length > 0) {
                 console.warn('CEP inválido (não tem 8 dígitos).');
-                // Limpar campos ou mostrar mensagem de erro
             }
         });
     }

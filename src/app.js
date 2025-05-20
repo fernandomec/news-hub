@@ -81,32 +81,28 @@ async function main() {
   
 main();
 
-// Importando rotas principais
+//rotas
 const rotasIndex = require('./routes/index');
-
-// Aplicando rotas
-app.use('/', rotasIndex); //agora /login, /register, etc., serão tratadas por rotasIndex
+app.use('/', rotasIndex);
 
 //home
 app.get('/', async (req, res) => {
   try {
-    //alterado de 'empresa' para 'noticia' para alinhar com o schema
     const noticias = await prisma.noticia.findMany({
-      where: { publicado: true }, //exemplo: buscar apenas notícias publicadas
+      where: { publicado: true },
       include: {
-        imagem: true, //inclui os dados da imagem da notícia (se houver relação 'imagem' em 'Noticia')
-        autor: { //exemplo: incluir nome do autor
+        imagem: true,
+        autor: {
           select: {
             username: true
           }
         }
       },
       orderBy: {
-        dataPublicacao: 'desc' //exemplo: ordenar por data de publicação
+        dataPublicacao: 'desc' //ordenar por data de publicação
       },
-      take: 10 //exemplo: pegar as 10 mais recentes
+      take: 10 //pegar as 10 mais recentes
     });
-    //a view 'home.ejs' precisará ser atualizada para usar 'noticias' em vez de 'empresas'
     res.render('home', { user: res.locals.user, noticias: noticias });
   } catch (error) {
     console.error('erro ao buscar notícias:', error);
