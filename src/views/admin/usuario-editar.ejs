@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <a href="/admin/usuarios" class="back-button">Voltar</a>
+        <h1>Editar Usuário</h1>
+        <% if (error) { %>
+            <div class="message error"><%= error %></div>
+        <% } %>
+        <form method="POST">
+            <label>Nome:</label>
+            <input type="text" name="username" value="<%= usuario.username %>" required>
+            <label>Email:</label>
+            <input type="email" name="email" value="<%= usuario.email %>" required>
+            <label>Nova Senha:</label>
+            <input type="password" name="novaSenha" placeholder="Deixe em branco para não alterar">
+            <label>Role:</label>
+            <select name="role" <%= user.role !== 'SUPER_ADMIN' ? 'disabled' : '' %>>
+                <option value="USER" <%= usuario.role === 'USER' ? 'selected' : '' %>>USER</option>
+                <option value="EDITOR" <%= usuario.role === 'EDITOR' ? 'selected' : '' %>>EDITOR</option>
+                <% if (user.role === 'SUPER_ADMIN') { %>
+                    <option value="ADMIN" <%= usuario.role === 'ADMIN' ? 'selected' : '' %>>ADMIN</option>
+                    <option value="SUPER_ADMIN" <%= usuario.role === 'SUPER_ADMIN' ? 'selected' : '' %>>SUPER_ADMIN</option>
+                <% } %>
+            </select>
+            <label>
+                <input type="checkbox" name="podeComentar" <%= usuario.podeComentar ? 'checked' : '' %>> Pode comentar
+            </label>
+            <% if (usuario.imagemPerfilId) { %>
+                <label>
+                    <input type="checkbox" name="apagarFoto"> Apagar foto de perfil
+                </label>
+                <img src="/imagem/<%= usuario.imagemPerfilId %>" alt="Foto de perfil" style="max-width:80px;max-height:80px;border-radius:50%;margin-bottom:10px;">
+            <% } %>
+            <button type="submit">Salvar</button>
+        </form>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

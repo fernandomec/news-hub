@@ -83,7 +83,9 @@ main();
 
 //rotas
 const rotasIndex = require('./routes/index');
+const rotasAdmin = require('./routes/admin');
 app.use('/', rotasIndex);
+app.use('/admin', rotasAdmin);
 
 //painel superadmin
 app.get('/superadmin', authMiddleware, checkRole(['SUPER_ADMIN']), async (req, res) => {
@@ -93,37 +95,6 @@ app.get('/superadmin', authMiddleware, checkRole(['SUPER_ADMIN']), async (req, r
 //painel admin
 app.get('/admin', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
   res.render('admin/admin', { user: res.locals.user });
-});
-
-//gerenciar usuários
-app.get('/admin/usuarios', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-  //busque usuários do banco e envie para a view
-  const usuarios = await prisma.usuario.findMany({ orderBy: { createdAt: 'desc' } });
-  res.render('admin/usuarios', { user: res.locals.user, usuarios });
-});
-
-//gerenciar notícias
-app.get('/admin/noticias', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-  const noticias = await prisma.noticia.findMany({ orderBy: { createdAt: 'desc' } });
-  res.render('admin/noticias', { user: res.locals.user, noticias });
-});
-
-//gerenciar comentários
-app.get('/admin/comentarios', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-  const comentarios = await prisma.comentario.findMany({ orderBy: { createdAt: 'desc' } });
-  res.render('admin/comentarios', { user: res.locals.user, comentarios });
-});
-
-//gerenciar categorias
-app.get('/admin/categorias', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-  const categorias = await prisma.categoria.findMany({ orderBy: { createdAt: 'desc' } });
-  res.render('admin/categorias', { user: res.locals.user, categorias });
-});
-
-//gerenciar tags
-app.get('/admin/tags', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-  const tags = await prisma.tag.findMany({ orderBy: { createdAt: 'desc' } });
-  res.render('admin/tags', { user: res.locals.user, tags });
 });
 
 //home

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Categorias</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Categorias</h1>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Slug</th>
+                    <th>Descrição</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categorias.forEach(cat => { %>
+                    <tr>
+                        <td><%= cat.id %></td>
+                        <td><%= cat.nome %></td>
+                        <td><%= cat.slug %></td>
+                        <td><%= cat.descricao %></td>
+                        <td><%= new Date(cat.createdAt).toLocaleDateString('pt-BR') %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

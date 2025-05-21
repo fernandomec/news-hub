@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Comentário</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Editar Comentário</h1>
+        <% if (error) { %>
+            <div class="message error"><%= error %></div>
+        <% } %>
+        <form method="POST">
+            <label>Conteúdo:</label>
+            <textarea name="conteudo" required><%= comentario.conteudo %></textarea>
+            <label>
+                <input type="checkbox" name="aprovado" <%= comentario.aprovado ? 'checked' : '' %>> Aprovado
+            </label>
+            <button type="submit">Salvar</button>
+        </form>
+        <a href="/admin/comentarios" class="back-button">Voltar</a>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

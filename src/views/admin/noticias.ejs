@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Notícias</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Notícias</h1>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Publicado</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% noticias.forEach(n => { %>
+                    <tr>
+                        <td><%= n.id %></td>
+                        <td><%= n.titulo %></td>
+                        <td><%= n.autor?.username %></td>
+                        <td><%= n.publicado ? 'Sim' : 'Não' %></td>
+                        <td><%= new Date(n.createdAt).toLocaleDateString('pt-BR') %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

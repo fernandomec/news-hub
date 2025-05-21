@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Tags</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Tags</h1>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Slug</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tags.forEach(tag => { %>
+                    <tr>
+                        <td><%= tag.id %></td>
+                        <td><%= tag.nome %></td>
+                        <td><%= tag.slug %></td>
+                        <td><%= new Date(tag.createdAt).toLocaleDateString('pt-BR') %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Usuários</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <a href="/admin" class="back-button" style="margin-bottom:1em;">Voltar ao Painel</a>
+        <h1>Usuários</h1>
+        <form method="get" action="/admin/usuarios" class="admin-search-form">
+            <input type="text" name="q" placeholder="Buscar por nome, email, id, role..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+            <button type="submit" class="material-symbols-outlined" title="Buscar">search</button>
+        </form>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Data de Cadastro</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% usuarios.forEach(u => { %>
+                    <tr>
+                        <td><%= u.id %></td>
+                        <td><%= u.username %></td>
+                        <td><%= u.email %></td>
+                        <td><%= u.role %></td>
+                        <td><%= new Date(u.createdAt).toLocaleDateString('pt-BR') %></td>
+                        <td>
+                            <a href="/admin/usuarios/<%= u.id %>/editar" class="material-symbols-outlined" title="Editar">edit</a>
+                            <!-- <a href="/admin/usuarios/<%= u.id %>/remover" class="material-symbols-outlined" title="Remover">delete</a> -->
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

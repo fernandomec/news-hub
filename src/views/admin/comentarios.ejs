@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Comentários</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Comentários</h1>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Autor</th>
+                    <th>Notícia</th>
+                    <th>Conteúdo</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% comentarios.forEach(c => { %>
+                    <tr>
+                        <td><%= c.id %></td>
+                        <td><%= c.autor?.username %></td>
+                        <td><%= c.noticia?.titulo %></td>
+                        <td><%= c.conteudo %></td>
+                        <td><%= new Date(c.createdAt).toLocaleDateString('pt-BR') %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>
