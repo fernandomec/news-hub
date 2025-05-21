@@ -10,15 +10,29 @@
 <body>
     <%- include('../partials/header', { user: user }) %>
     <main class="main-content admin-panel">
+        <a href="/admin" class="back-button" style="margin-bottom:1em;">Voltar ao Painel</a>
         <h1>Notícias</h1>
+        <div style="margin-bottom: 1em;">
+            <a href="/admin/noticias/nova" class="material-symbols-outlined" title="Nova Notícia" style="color:green;font-size:2em;vertical-align:middle;">add_circle</a>
+        </div>
+        <form method="get" action="/admin/noticias" class="admin-search-form">
+            <input type="text" name="q" placeholder="Buscar por título, slug, id..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+            <button type="submit" class="material-symbols-outlined" title="Buscar">search</button>
+        </form>
         <table class="admin-table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Título</th>
-                    <th>Autor</th>
+                    <th>Resumo</th>
                     <th>Publicado</th>
-                    <th>Data</th>
+                    <th>Categorias</th>
+                    <th>Tags</th>
+                    <th>Autor</th>
+                    <th>Data Criação</th>
+                    <th>Última Edição</th>
+                    <th>Comentários Ativados</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,9 +40,28 @@
                     <tr>
                         <td><%= n.id %></td>
                         <td><%= n.titulo %></td>
-                        <td><%= n.autor?.username %></td>
+                        <td><%= n.resumo %></td>
                         <td><%= n.publicado ? 'Sim' : 'Não' %></td>
+                        <td>
+                            <% if (n.categorias && n.categorias.length > 0) { %>
+                                <%= n.categorias.map(c => c.nome).join(', ') %>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (n.tags && n.tags.length > 0) { %>
+                                <%= n.tags.map(t => t.nome).join(', ') %>
+                            <% } %>
+                        </td>
+                        <td><%= n.autor?.username %></td>
                         <td><%= new Date(n.createdAt).toLocaleDateString('pt-BR') %></td>
+                        <td><%= new Date(n.updatedAt).toLocaleDateString('pt-BR') %></td>
+                        <td><%= n.comentariosAtivados ? 'Sim' : 'Não' %></td>
+                        <td>
+                            <a href="/admin/noticias/<%= n.id %>/editar" class="material-symbols-outlined" title="Editar">edit</a>
+                            <form action="/admin/noticias/<%= n.id %>/apagar" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar esta notícia?');">
+                                <button type="submit" class="material-symbols-outlined" title="Apagar" style="color:red;background:none;border:none;cursor:pointer;">delete</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>

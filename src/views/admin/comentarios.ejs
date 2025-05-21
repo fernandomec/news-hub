@@ -10,6 +10,7 @@
 <body>
     <%- include('../partials/header', { user: user }) %>
     <main class="main-content admin-panel">
+        <a href="/admin" class="back-button">Voltar ao Painel</a>
         <h1>Comentários</h1>
         <table class="admin-table">
             <thead>
@@ -18,7 +19,9 @@
                     <th>Autor</th>
                     <th>Notícia</th>
                     <th>Conteúdo</th>
+                    <th>Aprovado</th>
                     <th>Data</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +31,18 @@
                         <td><%= c.autor?.username %></td>
                         <td><%= c.noticia?.titulo %></td>
                         <td><%= c.conteudo %></td>
+                        <td><%= c.aprovado ? 'Sim' : 'Não' %></td>
                         <td><%= new Date(c.createdAt).toLocaleDateString('pt-BR') %></td>
+                        <td>
+                            <% if (!c.aprovado) { %>
+                                <form action="/admin/comentarios/<%= c.id %>/aprovar" method="POST" style="display:inline;">
+                                    <button type="submit" class="material-symbols-outlined" title="Aprovar" style="color:green;background:none;border:none;cursor:pointer;">check_circle</button>
+                                </form>
+                            <% } %>
+                            <form action="/admin/comentarios/<%= c.id %>/apagar" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar este comentário?');">
+                                <button type="submit" class="material-symbols-outlined" title="Apagar" style="color:red;background:none;border:none;cursor:pointer;">delete</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>

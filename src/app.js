@@ -111,14 +111,104 @@ app.get('/', async (req, res) => {
         }
       },
       orderBy: {
-        dataPublicacao: 'desc' //ordenar por data de publicação
+        dataPublicacao: 'desc'
       },
-      take: 10 //pegar as 10 mais recentes
+      take: 10
     });
     res.render('home', { user: res.locals.user, noticias: noticias });
   } catch (error) {
     console.error('erro ao buscar notícias:', error);
     res.render('home', { user: res.locals.user, noticias: [] });
+  }
+});
+
+//rota para exibir notícia individual por slug
+app.get('/noticia/:slug', async (req, res) => {
+  try {
+    const noticia = await prisma.noticia.findUnique({
+      where: { slug: req.params.slug },
+      include: {
+        imagem: true,
+        autor: { select: { username: true } },
+        categorias: true,
+        tags: true,
+        comentarios: {
+          where: { aprovado: true },
+          include: {
+            autor: { select: { username: true, imagemPerfilId: true } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      }
+    });
+    if (!noticia || !noticia.publicado) {
+      return res.status(404).render('404');
+    }
+    res.render('noticia', { noticia, user: res.locals.user, mensagemComentario: null });
+  } catch (error) {
+    res.status(404).render('404');
+  }
+});
+
+//postar comentário em notícia
+app.post('/noticia/:slug/comentar', async (req, res) => {
+  try {
+    if (!res.locals.user) {
+      return res.redirect('/login');
+    }
+    const noticia = await prisma.noticia.findUnique({ where: { slug: req.params.slug } });
+    if (!noticia || !noticia.publicado) {
+      return res.status(404).render('404');
+    }
+    const conteudo = req.body.conteudo?.trim();
+    if (!conteudo || conteudo.length < 2) {
+      //renderiza a notícia novamente com erro
+      const noticiaCompleta = await prisma.noticia.findUnique({
+        where: { slug: req.params.slug },
+        include: {
+          imagem: true,
+          autor: { select: { username: true } },
+          categorias: true,
+          tags: true,
+          comentarios: {
+            where: { aprovado: true },
+            include: {
+              autor: { select: { username: true, imagemPerfilId: true } }
+            },
+            orderBy: { createdAt: 'asc' }
+          }
+        }
+      });
+      return res.render('noticia', { noticia: noticiaCompleta, user: res.locals.user, mensagemComentario: 'Comentário muito curto.' });
+    }
+    await prisma.comentario.create({
+      data: {
+        conteudo,
+        autorId: res.locals.user.id,
+        noticiaId: noticia.id,
+        aprovado: false //comentário precisa ser aprovado
+      }
+    });
+    //renderiza a notícia novamente com mensagem de sucesso
+    const noticiaCompleta = await prisma.noticia.findUnique({
+      where: { slug: req.params.slug },
+      include: {
+        imagem: true,
+        autor: { select: { username: true } },
+        categorias: true,
+        tags: true,
+        comentarios: {
+          where: { aprovado: true },
+          include: {
+            autor: { select: { username: true, imagemPerfilId: true } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      }
+    });
+    res.render('noticia', { noticia: noticiaCompleta, user: res.locals.user, mensagemComentario: 'Comentário enviado para aprovação.' });
+  } catch (error) {
+    res.status(404).render('404');
   }
 });
 

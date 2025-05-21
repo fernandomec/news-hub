@@ -10,7 +10,11 @@
 <body>
     <%- include('../partials/header', { user: user }) %>
     <main class="main-content admin-panel">
+        <a href="/admin" class="back-button">Voltar ao Painel</a>
         <h1>Categorias</h1>
+        <div style="margin-bottom: 1em;">
+            <a href="/admin/categorias/nova" class="material-symbols-outlined" title="Nova Categoria" style="color:green;font-size:2em;vertical-align:middle;">add_circle</a>
+        </div>
         <table class="admin-table">
             <thead>
                 <tr>
@@ -19,6 +23,7 @@
                     <th>Slug</th>
                     <th>Descrição</th>
                     <th>Data</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,6 +34,12 @@
                         <td><%= cat.slug %></td>
                         <td><%= cat.descricao %></td>
                         <td><%= new Date(cat.createdAt).toLocaleDateString('pt-BR') %></td>
+                        <td>
+                            <a href="/admin/categorias/<%= cat.id %>/editar" class="material-symbols-outlined" title="Editar">edit</a>
+                            <form action="/admin/categorias/<%= cat.id %>/apagar" method="POST" style="display:inline;" onsubmit="return confirm('Apagar esta categoria?');">
+                                <button type="submit" class="material-symbols-outlined" title="Apagar" style="color:red;background:none;border:none;cursor:pointer;">delete</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             </tbody>

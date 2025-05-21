@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Notícia</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <a href="/admin/noticias" class="back-button">Voltar</a>
+        <h1>Criar Notícia</h1>
+        <% if (error) { %>
+            <div class="message error"><%= error %></div>
+        <% } %>
+        <form method="POST" enctype="multipart/form-data">
+            <label>Título:</label>
+            <input type="text" name="titulo" value="<%= noticia?.titulo || '' %>" required>
+            <label>Resumo:</label>
+            <input type="text" name="resumo" value="<%= noticia?.resumo || '' %>" maxlength="300" required>
+            <label>Conteúdo:</label>
+            <textarea name="conteudo" required><%= noticia?.conteudo || '' %></textarea>
+            <label>Imagem:</label>
+            <input type="file" name="imagem" accept="image/*">
+            <label>
+                <input type="checkbox" name="publicado" <%= noticia?.publicado ? 'checked' : '' %>> Publicado
+            </label>
+            <label>
+                <input type="checkbox" name="comentariosAtivados" <%= noticia?.comentariosAtivados !== false ? 'checked' : '' %>> Comentários Ativados
+            </label>
+            <label>Categorias:</label>
+            <select name="categorias" multiple size="4">
+                <% categorias.forEach(cat => { %>
+                    <option value="<%= cat.id %>" <%= noticia?.categorias && noticia.categorias.includes(cat.id) ? 'selected' : '' %>><%= cat.nome %></option>
+                <% }) %>
+            </select>
+            <label>Tags:</label>
+            <select name="tags" multiple size="4">
+                <% tags.forEach(tag => { %>
+                    <option value="<%= tag.id %>" <%= noticia?.tags && noticia.tags.includes(tag.id) ? 'selected' : '' %>><%= tag.nome %></option>
+                <% }) %>
+            </select>
+            <button type="submit">Criar</button>
+        </form>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

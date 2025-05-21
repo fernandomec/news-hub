@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title><%= noticia.titulo %> - News Hub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        .noticia-detalhe-container {
+            max-width: 700px;
+            margin: 2.5rem auto 2.5rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+            padding: 2.5rem 2rem;
+        }
+        .noticia-detalhe-img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .noticia-detalhe-titulo {
+            font-size: 2em;
+            color: #c4170c;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+        }
+        .noticia-detalhe-resumo {
+            font-size: 1.1em;
+            color: #444;
+            margin-bottom: 1.2em;
+        }
+        .noticia-detalhe-meta {
+            color: #888;
+            font-size: 0.98em;
+            margin-bottom: 1.5em;
+        }
+        .noticia-detalhe-meta .material-symbols-outlined {
+            font-size: 1.1em;
+            color: #c4170c;
+            vertical-align: middle;
+        }
+        .noticia-detalhe-conteudo {
+            font-size: 1.13em;
+            color: #222;
+            line-height: 1.7;
+            margin-bottom: 2em;
+            white-space: pre-line;
+        }
+        .noticia-detalhe-categorias, .noticia-detalhe-tags {
+            margin-bottom: 0.7em;
+            font-size: 0.98em;
+        }
+        .noticia-detalhe-categorias span,
+        .noticia-detalhe-tags span {
+            background: #f4f6f8;
+            color: #c4170c;
+            border-radius: 6px;
+            padding: 3px 10px;
+            margin-right: 7px;
+            font-size: 0.97em;
+            display: inline-block;
+        }
+        .comentarios-box {
+            background: #f6f8fa;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(196,23,12,0.05);
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            margin-top: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .comentarios-lista {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .comentario-item {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 1.2em;
+            padding: 1em 1.2em;
+            box-shadow: 0 2px 8px rgba(196,23,12,0.04);
+        }
+        .comentario-autor {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5em;
+        }
+        .comentario-autor-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #eee;
+        }
+        .comentario-autor-nome {
+            font-weight: 600;
+            color: #c4170c;
+        }
+        .comentario-data {
+            color: #888;
+            font-size: 0.95em;
+            margin-left: 10px;
+        }
+        .comentario-conteudo {
+            color: #222;
+            font-size: 1.05em;
+            line-height: 1.5;
+            margin-left: 42px;
+        }
+        .comentario-form {
+            margin-bottom: 2em;
+        }
+        .comentario-form textarea {
+            width: 100%;
+            min-height: 70px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 0.7em;
+            resize: vertical;
+        }
+        .comentario-form button {
+            background: #c4170c;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 22px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 8px rgba(196,23,12,0.05);
+        }
+        .comentario-form button:hover {
+            background: #a90f06;
+            transform: translateY(-2px);
+        }
+        .comentario-form .mensagem {
+            margin-bottom: 1em;
+            color: #c4170c;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', { user: user }) %>
+    <main>
+        <div class="noticia-detalhe-container">
+            <% if (noticia.imagemId || (noticia.imagem && noticia.imagem.id)) { %>
+                <img src="/imagem/<%= noticia.imagemId || noticia.imagem.id %>" alt="Imagem da notícia" class="noticia-detalhe-img">
+            <% } %>
+            <h1 class="noticia-detalhe-titulo"><%= noticia.titulo %></h1>
+            <div class="noticia-detalhe-resumo"><%= noticia.resumo %></div>
+            <div class="noticia-detalhe-meta">
+                <span class="material-symbols-outlined">person</span> <%= noticia.autor?.username %> &nbsp;|&nbsp;
+                <span class="material-symbols-outlined">calendar_today</span> <%= new Date(noticia.createdAt).toLocaleDateString('pt-BR') %>
+            </div>
+            <% if (noticia.categorias && noticia.categorias.length > 0) { %>
+                <div class="noticia-detalhe-categorias">
+                    <strong>Categorias:</strong>
+                    <% noticia.categorias.forEach(cat => { %>
+                        <span><%= cat.nome %></span>
+                    <% }) %>
+                </div>
+            <% } %>
+            <% if (noticia.tags && noticia.tags.length > 0) { %>
+                <div class="noticia-detalhe-tags">
+                    <strong>Tags:</strong>
+                    <% noticia.tags.forEach(tag => { %>
+                        <span>#<%= tag.nome %></span>
+                    <% }) %>
+                </div>
+            <% } %>
+            <div class="noticia-detalhe-conteudo"><%= noticia.conteudo %></div>
+        </div>
+
+        <!-- comentários separados em um box -->
+        <section class="comentarios-box">
+            <h2 style="margin-bottom:1em;font-size:1.2em;color:#c4170c;">Comentários</h2>
+            <!-- form de comentário -->
+            <% if (user && user.podeComentar !== false) { %>
+                <form class="comentario-form" method="POST" action="/noticia/<%= noticia.slug %>/comentar">
+                    <% if (mensagemComentario) { %>
+                        <div class="mensagem"><%= mensagemComentario %></div>
+                    <% } %>
+                    <textarea name="conteudo" placeholder="Escreva seu comentário..." required minlength="2"></textarea>
+                    <button type="submit">Comentar</button>
+                </form>
+            <% } else if (!user) { %>
+                <div class="comentario-form">
+                    <a href="/login" class="back-button" style="background:#c4170c;color:#fff;display:inline-block;margin-bottom:1em;">Faça login para comentar</a>
+                </div>
+            <% } %>
+            <% if (noticia.comentarios && noticia.comentarios.length > 0) { %>
+                <ul class="comentarios-lista">
+                    <% noticia.comentarios.forEach(comentario => { %>
+                        <li class="comentario-item">
+                            <div class="comentario-autor">
+                                <% if (comentario.autor && comentario.autor.imagemPerfilId) { %>
+                                    <img src="/imagem/<%= comentario.autor.imagemPerfilId %>" alt="Perfil" class="comentario-autor-img">
+                                <% } else { %>
+                                    <img src="/imgs/placeholder_user.png" alt="Perfil" class="comentario-autor-img">
+                                <% } %>
+                                <span class="comentario-autor-nome"><%= comentario.autor?.username || 'Usuário' %></span>
+                                <span class="comentario-data"><%= new Date(comentario.createdAt).toLocaleString('pt-BR') %></span>
+                            </div>
+                            <div class="comentario-conteudo"><%= comentario.conteudo %></div>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p style="color:#888;">Nenhum comentário ainda.</p>
+            <% } %>
+        </section>
+    </main>
+    <%- include('partials/footer') %>
+</body>
+</html>

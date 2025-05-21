@@ -13,28 +13,46 @@
     <%- include('partials/header') %>
 
     <main class="main-content">
-        "Em Alta" e "Notícias"
         <h3>Notícias</h3>
-        <!--em alta-->
-        <section class="em-alta"> <!--Adicionar aqui as 3 em alta no dia-->
-
-        </section>
-
-        <!--todas outras notícias da mais recente para a mais atual...-->
         <section class="todas-noticias">
-            
-            <ul>
+            <div class="noticias-feed">
                 <% if (typeof noticias !== 'undefined' && noticias.length > 0) { %>
                     <% noticias.forEach(noticia => { %>
-                        <li><a href="/noticia/<%= noticia.slug %>"><%= noticia.titulo %></a></li>
+                        <div class="noticia-card">
+                            <a href="/noticia/<%= noticia.slug %>">
+                                <div class="noticia-img-container">
+                                    <% if (noticia.imagemId || (noticia.imagem && noticia.imagem.id)) { %>
+                                        <img src="/imagem/<%= noticia.imagemId || noticia.imagem.id %>" alt="Imagem da notícia">
+                                    <% } else { %>
+                                        <img src="/imgs/placeholder_news.png" alt="Sem imagem">
+                                    <% } %>
+                                </div>
+                                <div class="noticia-card-content">
+                                    <h2 class="noticia-titulo"><%= noticia.titulo %></h2>
+                                    <p class="noticia-resumo"><%= noticia.resumo %></p>
+                                    <div class="noticia-autor">
+                                        <span class="material-symbols-outlined">person</span>
+                                        <span><%= noticia.autor?.username %></span>
+                                    </div>
+                                    <div class="noticia-data-publicacao">
+                                        <span class="material-symbols-outlined" style="font-size:1em;color:#888;">calendar_today</span>
+                                        <span style="color:#888;">
+                                            <%= noticia.dataPublicacao 
+                                                ? new Date(noticia.dataPublicacao).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                                                : new Date(noticia.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                                            %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     <% }); %>
                 <% } else { %>
-                    <li>Nenhuma notícia disponível</li>
+                    <p>Nenhuma notícia disponível</p>
                 <% } %>
-            </ul>
+            </div>
         </section>
     </main>
-
 
     <%- include('partials/footer') %>
 </body>

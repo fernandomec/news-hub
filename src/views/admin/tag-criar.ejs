@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Tag</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <a href="/admin/tags" class="back-button">Voltar</a>
+        <h1>Criar Tag</h1>
+        <% if (error) { %>
+            <div class="message error"><%= error %></div>
+        <% } %>
+        <form method="POST">
+            <label>Nome:</label>
+            <input type="text" name="nome" value="<%= tag?.nome || '' %>" required>
+            <label>Slug:</label>
+            <input type="text" name="slug" value="<%= tag?.slug || '' %>" required>
+            <button type="submit">Criar</button>
+        </form>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

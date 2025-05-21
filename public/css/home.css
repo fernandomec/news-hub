@@ -1,0 +1,111 @@
+.noticias-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.noticia-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.noticia-card:hover {
+    box-shadow: 0 8px 32px rgba(196,23,12,0.13);
+    transform: translateY(-2px) scale(1.01);
+}
+
+.noticia-card a {
+    display: flex;
+    flex-direction: row;
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+}
+
+.noticia-img-container {
+    min-width: 140px;
+    max-width: 180px;
+    width: 180px;
+    height: 140px;
+    overflow: hidden;
+    background: #f4f6f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noticia-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.noticia-card-content {
+    padding: 1.2rem 1.5rem 1.2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.noticia-titulo {
+    font-size: 1.3em;
+    color: #c4170c;
+    margin: 0 0 0.5em 0;
+    font-weight: 700;
+}
+
+.noticia-resumo {
+    color: #444;
+    font-size: 1em;
+    margin-bottom: 0.7em;
+    line-height: 1.5;
+}
+
+.noticia-autor {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #888;
+    font-size: 0.98em;
+}
+
+.noticia-autor .material-symbols-outlined {
+    font-size: 1.1em;
+    color: #c4170c;
+}
+
+.noticia-data-publicacao {
+    margin-top: 0.5em;
+    font-size: 0.97em;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@media (max-width: 700px) {
+    .noticias-feed {
+        gap: 1.2rem;
+    }
+    .noticia-card {
+        flex-direction: column;
+    }
+    .noticia-img-container {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: 180px;
+    }
+    .noticia-card-content {
+        padding: 1rem 1.1rem 1.2rem 1.1rem;
+    }
+}

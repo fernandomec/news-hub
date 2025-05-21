@@ -3,6 +3,19 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { authMiddleware, checkRole } = require('../middleware/auth');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
+// função utilitária para gerar slug
+function slugify(text) {
+    return text
+        .toString()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-') // troca não alfanuméricos por -
+        .replace(/^-+|-+$/g, ''); // remove - do início/fim
+}
 
 //gerenciar usuários
 router.get('/usuarios', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
@@ -149,21 +162,162 @@ router.post('/usuarios/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_A
     res.redirect('/admin/usuarios');
 });
 
+//exibir formulário de criação de notícia
+router.get('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    const categorias = await prisma.categoria.findMany();
+    const tags = await prisma.tag.findMany();
+    res.render('admin/noticia-criar', {
+        user: res.locals.user,
+        categorias,
+        tags,
+        error: null,
+        noticia: null
+    });
+});
+
+//criar notícia (POST)
+router.post('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), upload.single('imagem'), async (req, res) => {
+    try {
+        const { titulo, conteudo, resumo, publicado, categorias, tags, comentariosAtivados } = req.body;
+        if (!titulo || !conteudo || !resumo) {
+            const categoriasList = await prisma.categoria.findMany();
+            const tagsList = await prisma.tag.findMany();
+            return res.render('admin/noticia-criar', {
+                user: res.locals.user,
+                categorias: categoriasList,
+                tags: tagsList,
+                error: 'Preencha todos os campos obrigatórios.',
+                noticia: req.body
+            });
+        }
+        let imagemId = null;
+        if (req.file && req.file.buffer) {
+            const imagem = await prisma.imagem.create({
+                data: {
+                    dados: Buffer.from(req.file.buffer),
+                    tipoMime: req.file.mimetype
+                }
+            });
+            imagemId = imagem.id;
+        }
+        const slug = slugify(titulo);
+        const noticia = await prisma.noticia.create({
+            data: {
+                titulo,
+                slug,
+                conteudo,
+                resumo,
+                publicado: publicado === 'on',
+                autorId: res.locals.user.id,
+                comentariosAtivados: comentariosAtivados === 'on',
+                imagemId,
+                categorias: categorias ? { connect: (Array.isArray(categorias) ? categorias : [categorias]).map(id => ({ id: Number(id) })) } : undefined,
+                tags: tags ? { connect: (Array.isArray(tags) ? tags : [tags]).map(id => ({ id: Number(id) })) } : undefined
+            }
+        });
+        res.redirect('/admin/noticias');
+    } catch (error) {
+        const categoriasList = await prisma.categoria.findMany();
+        const tagsList = await prisma.tag.findMany();
+        res.render('admin/noticia-criar', {
+            user: res.locals.user,
+            categorias: categoriasList,
+            tags: tagsList,
+            error: 'Erro ao criar notícia.',
+            noticia: req.body
+        });
+    }
+});
+
 //editar notícia (GET)
 router.get('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-    const noticia = await prisma.noticia.findUnique({ where: { id: Number(req.params.id) } });
+    const noticia = await prisma.noticia.findUnique({
+        where: { id: Number(req.params.id) },
+        include: { categorias: true, tags: true, imagem: true }
+    });
     if (!noticia) return res.redirect('/admin/noticias');
-    res.render('admin/noticia-editar', { user: res.locals.user, noticia, error: null });
+    const categorias = await prisma.categoria.findMany();
+    const tags = await prisma.tag.findMany();
+    res.render('admin/noticia-editar', {
+        user: res.locals.user,
+        noticia,
+        categorias,
+        tags,
+        error: null
+    });
 });
 
 //editar notícia (POST)
-router.post('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
-    const { titulo, resumo, conteudo, publicado } = req.body;
-    await prisma.noticia.update({
-        where: { id: Number(req.params.id) },
-        data: { titulo, resumo, conteudo, publicado: publicado === 'on' }
-    });
-    res.redirect('/admin/noticias');
+router.post('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), upload.single('imagem'), async (req, res) => {
+    try {
+        const { titulo, conteudo, resumo, publicado, categorias, tags, comentariosAtivados, apagarImagem } = req.body;
+        const noticiaId = Number(req.params.id);
+        let dataUpdate = {
+            titulo,
+            conteudo,
+            resumo,
+            publicado: publicado === 'on',
+            comentariosAtivados: comentariosAtivados === 'on',
+            categorias: {
+                set: categorias ? (Array.isArray(categorias) ? categorias : [categorias]).map(id => ({ id: Number(id) })) : []
+            },
+            tags: {
+                set: tags ? (Array.isArray(tags) ? tags : [tags]).map(id => ({ id: Number(id) })) : []
+            }
+        };
+
+        //atualiza slug automaticamente se titulo mudou
+        if (titulo) {
+            dataUpdate.slug = slugify(titulo);
+        }
+
+        //imagem
+        const noticia = await prisma.noticia.findUnique({ where: { id: noticiaId } });
+        if (apagarImagem === 'on' && noticia.imagemId) {
+            await prisma.imagem.delete({ where: { id: noticia.imagemId } }).catch(() => { });
+            dataUpdate.imagemId = null;
+        } else if (req.file && req.file.buffer) {
+            //substitui imagem
+            const imagem = await prisma.imagem.create({
+                data: {
+                    dados: Buffer.from(req.file.buffer),
+                    tipoMime: req.file.mimetype
+                }
+            });
+            //apaga imagem antiga se existir
+            if (noticia.imagemId) {
+                await prisma.imagem.delete({ where: { id: noticia.imagemId } }).catch(() => { });
+            }
+            dataUpdate.imagemId = imagem.id;
+        }
+
+        await prisma.noticia.update({
+            where: { id: noticiaId },
+            data: dataUpdate
+        });
+        res.redirect('/admin/noticias');
+    } catch (error) {
+        const noticia = await prisma.noticia.findUnique({ where: { id: Number(req.params.id) }, include: { categorias: true, tags: true, imagem: true } });
+        const categoriasList = await prisma.categoria.findMany();
+        const tagsList = await prisma.tag.findMany();
+        res.render('admin/noticia-editar', {
+            user: res.locals.user,
+            noticia,
+            categorias: categoriasList,
+            tags: tagsList,
+            error: 'Erro ao editar notícia.'
+        });
+    }
+});
+
+//apagar notícia
+router.post('/noticias/:id/apagar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    try {
+        await prisma.noticia.delete({ where: { id: Number(req.params.id) } });
+        res.redirect('/admin/noticias');
+    } catch (error) {
+        res.redirect('/admin/noticias');
+    }
 });
 
 //editar comentário (GET)
@@ -179,6 +333,23 @@ router.post('/comentarios/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPE
     await prisma.comentario.update({
         where: { id: Number(req.params.id) },
         data: { conteudo, aprovado: aprovado === 'on' }
+    });
+    res.redirect('/admin/comentarios');
+});
+
+//aprovar comentário
+router.post('/comentarios/:id/aprovar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    await prisma.comentario.update({
+        where: { id: Number(req.params.id) },
+        data: { aprovado: true }
+    });
+    res.redirect('/admin/comentarios');
+});
+
+//apagar comentário
+router.post('/comentarios/:id/apagar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    await prisma.comentario.delete({
+        where: { id: Number(req.params.id) }
     });
     res.redirect('/admin/comentarios');
 });
@@ -200,6 +371,35 @@ router.post('/categorias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER
     res.redirect('/admin/categorias');
 });
 
+// Formulário de nova categoria
+router.get('/categorias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    res.render('admin/categoria-criar', { user: res.locals.user, error: null, categoria: null });
+});
+
+// Criar categoria (POST)
+router.post('/categorias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    const { nome, slug, descricao } = req.body;
+    if (!nome || !slug || !descricao) {
+        return res.render('admin/categoria-criar', { user: res.locals.user, error: 'Preencha todos os campos.', categoria: req.body });
+    }
+    try {
+        await prisma.categoria.create({
+            data: { nome, slug, descricao }
+        });
+        res.redirect('/admin/categorias');
+    } catch (e) {
+        res.render('admin/categoria-criar', { user: res.locals.user, error: 'Erro ao criar categoria.', categoria: req.body });
+    }
+});
+
+// Remover categoria
+router.post('/categorias/:id/apagar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    try {
+        await prisma.categoria.delete({ where: { id: Number(req.params.id) } });
+    } catch (e) {}
+    res.redirect('/admin/categorias');
+});
+
 //editar tag (GET)
 router.get('/tags/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
     const tag = await prisma.tag.findUnique({ where: { id: Number(req.params.id) } });
@@ -214,6 +414,35 @@ router.post('/tags/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN
         where: { id: Number(req.params.id) },
         data: { nome, slug }
     });
+    res.redirect('/admin/tags');
+});
+
+// Formulário de nova tag
+router.get('/tags/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    res.render('admin/tag-criar', { user: res.locals.user, error: null, tag: null });
+});
+
+// Criar tag (POST)
+router.post('/tags/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    const { nome, slug } = req.body;
+    if (!nome || !slug) {
+        return res.render('admin/tag-criar', { user: res.locals.user, error: 'Preencha todos os campos.', tag: req.body });
+    }
+    try {
+        await prisma.tag.create({
+            data: { nome, slug }
+        });
+        res.redirect('/admin/tags');
+    } catch (e) {
+        res.render('admin/tag-criar', { user: res.locals.user, error: 'Erro ao criar tag.', tag: req.body });
+    }
+});
+
+// Remover tag
+router.post('/tags/:id/apagar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    try {
+        await prisma.tag.delete({ where: { id: Number(req.params.id) } });
+    } catch (e) {}
     res.redirect('/admin/tags');
 });
 
