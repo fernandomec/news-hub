@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel SuperAdmin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content">
+        <h1>Painel do Super Administrador</h1>
+        <ul>
+            <li><a href="#">Gerenciar Usuários</a></li>
+            <li><a href="#">Gerenciar Notícias</a></li>
+            <li><a href="#">Gerenciar Comentários</a></li>
+            <li><a href="#">Gerenciar Categorias</a></li>
+            <li><a href="#">Gerenciar Tags</a></li>
+            <li><a href="#">Configurações Avançadas</a></li>
+        </ul>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

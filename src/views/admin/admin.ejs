@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin_editor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content admin-panel">
+        <h1>Painel do Administrador</h1>
+        <ul class="admin-menu">
+            <li>
+                <a href="/admin/usuarios">
+                    <span class="material-symbols-outlined">group</span>
+                    Gerenciar Usuários
+                </a>
+            </li>
+            <li>
+                <a href="/admin/noticias">
+                    <span class="material-symbols-outlined">article</span>
+                    Gerenciar Notícias
+                </a>
+            </li>
+            <li>
+                <a href="/admin/comentarios">
+                    <span class="material-symbols-outlined">comment</span>
+                    Gerenciar Comentários
+                </a>
+            </li>
+            <li>
+                <a href="/admin/categorias">
+                    <span class="material-symbols-outlined">category</span>
+                    Gerenciar Categorias
+                </a>
+            </li>
+            <li>
+                <a href="/admin/tags">
+                    <span class="material-symbols-outlined">sell</span>
+                    Gerenciar Tags
+                </a>
+            </li>
+        </ul>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

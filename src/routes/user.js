@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Visualizar perfil do usuário logado
+//visualizar perfil do usuário logado
 router.get('/user', async (req, res) => {
     if (!res.locals.user) {
         return res.redirect('/login');
@@ -40,7 +40,7 @@ router.get('/user', async (req, res) => {
     }
 });
 
-// Exibir formulário de edição do perfil
+//exibir formulário de edição do perfil
 router.get('/user/edit', async (req, res) => {
     if (!res.locals.user) {
         return res.redirect('/login');
@@ -74,8 +74,9 @@ router.get('/user/edit', async (req, res) => {
     }
 });
 
-// Processar edição do perfil (agora com upload de imagem)
+//processar edição do perfil
 router.post('/user-edit', upload.single('profileImage'), async (req, res) => {
+    console.log('arquivo salçvo:', req.file);
     if (!res.locals.user) {
         return res.redirect('/login');
     }
@@ -100,30 +101,44 @@ router.post('/user-edit', upload.single('profileImage'), async (req, res) => {
             endereco,
             enderecoComplemento
         };
-        if (newPassword && newPassword.length >= 8) {
-            dataUpdate.senha = await bcrypt.hash(newPassword, 10);
-        }
 
-        // Se houver upload de imagem, salva no banco e atualiza o usuário
+        let imagemAntigaId = usuario.imagemPerfilId;
+
+        //salvar imagem de perfil se houver upload
         if (req.file && req.file.buffer) {
-            // Remove imagem antiga se existir
-            if (usuario.imagemPerfilId) {
-                await prisma.imagem.delete({ where: { id: usuario.imagemPerfilId } }).catch(() => { });
-            }
-            // Cria nova imagem
+            console.log('Salvando imagem no banco...');
+            //cria nova imagem
             const imagem = await prisma.imagem.create({
                 data: {
-                    dados: req.file.buffer,
+                    dados: Buffer.from(req.file.buffer),
                     tipoMime: req.file.mimetype
                 }
             });
             dataUpdate.imagemPerfilId = imagem.id;
         }
 
+        //salvar senha anterior e atualizar senha se for alterada
+        if (newPassword && newPassword.length >= 8) {
+            //salva senha antiga
+            await prisma.senhaAnterior.create({
+                data: {
+                    senha: usuario.senha,
+                    usuarioId: usuario.id
+                }
+            });
+            dataUpdate.senha = await bcrypt.hash(newPassword, 10);
+        }
+
         await prisma.usuario.update({
             where: { id: usuario.id },
             data: dataUpdate
         });
+
+        //após atualizar o usuário, deleta a imagem antiga se foi trocada
+        if (req.file && req.file.buffer && imagemAntigaId) {
+            await prisma.imagem.delete({ where: { id: imagemAntigaId } }).catch(() => { });
+        }
+
         messages.success = 'Perfil atualizado com sucesso!';
         const usuarioAtualizado = await prisma.usuario.findUnique({
             where: { id: usuario.id },
@@ -153,7 +168,7 @@ router.post('/user-edit', upload.single('profileImage'), async (req, res) => {
     }
 });
 
-// Rota para servir imagem de perfil
+//imagem de perfil
 router.get('/imagem/:id', async (req, res) => {
     try {
         const imagem = await prisma.imagem.findUnique({ where: { id: Number(req.params.id) } });

@@ -15,9 +15,6 @@
     <main class="main-content">
         <div class="profile-container">
             <img id="profileImagePreview" src="<%= user.profileImageUrl || '/imgs/placeholder_user.png' %>" alt="Profile" class="profile-image">
-            <div class="info-row" style="justify-content: center; margin-bottom: 1.2rem;">
-                <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="margin: 0 auto;">
-            </div>
             <h1 class="profile-name"><%= user.username %></h1>
 
             <% if (typeof messages !== 'undefined' && messages.error) { %>
@@ -28,6 +25,9 @@
             <% } %>
 
             <form id="editForm" action="/user-edit" method="POST" enctype="multipart/form-data">
+                <div class="info-row" style="justify-content: center; margin-bottom: 1.2rem;">
+                    <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="margin: 0 auto;">
+                </div>
                 <div class="profile-info">
                     <div class="info-row">
                         <span class="info-label">Email:</span>
@@ -92,7 +92,6 @@
                         <span class="info-label">Complemento:</span>
                         <input type="text" name="enderecoComplemento" value="<%= user.enderecoComplemento || '' %>">
                     </div>
-
                     <div class="password-confirm">
                         <div class="info-row">
                             <span class="info-label">Confirme sua senha atual:</span>
@@ -156,7 +155,7 @@
                 }
             });
 
-            // Preview da imagem de perfil ao selecionar arquivo
+            //preview da imagem de perfil ao selecionar arquivo
             var input = document.getElementById('profileImageInput');
             var preview = document.getElementById('profileImagePreview');
             if (input && preview) {

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Editor</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('../partials/header', { user: user }) %>
+    <main class="main-content">
+        <h1>Painel do Editor</h1>
+        <ul>
+            <li><a href="#">Criar Notícias</a></li>
+            <li><a href="#">Gerenciar Minhas Notícias</a></li>
+            <li><a href="#">Gerenciar Comentários</a></li>
+            <li><a href="#">Criar Categorias</a></li>
+            <li><a href="#">Criar Tags</a></li>
+        </ul>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

@@ -73,7 +73,7 @@ router.post('/register', async (req, res) => {
         const token = createToken(newUser.id, newUser.role);
         res.cookie('jwt', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }); //maxAge em ms (1 dia)
         
-        //redirecionar para home ou dashboard após registro bem-sucedido
+        //home
         res.redirect('/');
 
     } catch (error) {
