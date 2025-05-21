@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     function initializePasswordValidation(passwordFieldId, requirementsListSelector) {
         const passwordInput = document.getElementById(passwordFieldId);
-        const requirementsList = document.querySelector(requirementsListSelector);
+        // Suporta selector de container para requisitos (pode ser .password-requirements ou .new-password-requirements)
+        let requirementsList = null;
+        if (typeof requirementsListSelector === 'string') {
+            requirementsList = document.querySelector(requirementsListSelector);
+        } else {
+            requirementsList = requirementsListSelector;
+        }
 
-        if (!passwordInput) {
-            return;
-        }
-        if (!requirementsList) {
-            return;
-        }
+        if (!passwordInput || !requirementsList) return;
 
         const requirements = {
             length: requirementsList.querySelector('.requirement[data-req-type="length"]'),
@@ -16,9 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             special: requirementsList.querySelector('.requirement[data-req-type="special"]'),
         };
 
-        if (!requirements.length || !requirements.number || !requirements.special) {
-            return;
-        }
+        if (!requirements.length || !requirements.number || !requirements.special) return;
 
         passwordInput.addEventListener('input', function () {
             const value = this.value;
@@ -49,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Para register.ejs
     initializePasswordValidation('password', '#registerForm .password-requirements');
-    initializePasswordValidation('newPassword', '#editForm .new-password-requirements');
+    // Para user-edit.ejs
+    initializePasswordValidation('newPassword', '#editForm .new-password-requirements-container');
 });

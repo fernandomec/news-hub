@@ -273,9 +273,6 @@ body.pagina-usuario {
     .profile-container .password-input-container {
         width: 100%;
     }
-    .profile-container small.form-text-info {
-        padding-left: 0;
-    }
     .profile-container .edit-icon {
         display: none;
     }

@@ -4,24 +4,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     window.passwordToggleInitialized = true;
 
-    const togglePasswordIcons = document.querySelectorAll('.toggle-password-icon');
+    // Corrige para funcionar com múltiplos campos (ex: user-edit) e não duplicar olhos
+    document.querySelectorAll('.password-input-container').forEach(container => {
+        const input = container.querySelector('input[type="password"], input[type="text"]');
+        let icon = container.querySelector('.toggle-password-icon');
+        if (!input) return;
 
-    togglePasswordIcons.forEach(icon => {
-        icon.addEventListener('click', function() {
-            const targetInputId = this.dataset.target;
-            const passwordInput = document.getElementById(targetInputId);
-
-            if (passwordInput) {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    this.textContent = 'visibility_off';
-                    this.setAttribute('title', 'Ocultar senha');
-                } else {
-                    passwordInput.type = 'password';
-                    this.textContent = 'visibility';
-                    this.setAttribute('title', 'Mostrar senha');
-                }
-            }
+        // Remove ícones duplicados
+        container.querySelectorAll('.toggle-password-icon').forEach((el, idx) => {
+            if (idx > 0) el.remove();
         });
+        icon = container.querySelector('.toggle-password-icon');
+
+        if (!icon) {
+            // Cria o ícone se não existir
+            const newIcon = document.createElement('span');
+            newIcon.className = 'material-symbols-outlined toggle-password-icon';
+            newIcon.dataset.target = input.id;
+            newIcon.textContent = 'visibility';
+            newIcon.title = 'Mostrar senha';
+            container.appendChild(newIcon);
+            icon = newIcon;
+        }
+
+        icon.onclick = function() {
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+                icon.title = 'Ocultar senha';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+                icon.title = 'Mostrar senha';
+            }
+        };
     });
 });

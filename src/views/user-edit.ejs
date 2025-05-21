@@ -14,7 +14,10 @@
 
     <main class="main-content">
         <div class="profile-container">
-            <img src="<%= user.profileImageUrl || '/imgs/account-icon.png' %>" alt="Profile" class="profile-image">
+            <img id="profileImagePreview" src="<%= user.profileImageUrl || '/imgs/placeholder_user.png' %>" alt="Profile" class="profile-image">
+            <div class="info-row" style="justify-content: center; margin-bottom: 1.2rem;">
+                <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="margin: 0 auto;">
+            </div>
             <h1 class="profile-name"><%= user.username %></h1>
 
             <% if (typeof messages !== 'undefined' && messages.error) { %>
@@ -24,7 +27,7 @@
                 <div class="mensagem-feedback sucesso-feedback"><%= messages.success %></div>
             <% } %>
 
-            <form id="editForm" action="/user-edit" method="POST">
+            <form id="editForm" action="/user-edit" method="POST" enctype="multipart/form-data">
                 <div class="profile-info">
                     <div class="info-row">
                         <span class="info-label">Email:</span>
@@ -40,6 +43,14 @@
                         <span class="info-label">Telefone:</span>
                         <input type="tel" name="tel" value="<%= user.tel || '' %>" placeholder="(00) 00000-0000">
                     </div>
+                    <div class="info-row">
+                        <small>
+                            <div class="requirement invalid">O telefone deve estar no fomato +55 (00) 90000-0000</div>
+                            ou
+                            <div class="requirement invalid">O telefone deve estar no fomato +55 (00) 0000-0000.</div>
+                        </small>
+                    </div>
+
 
                     <div class="info-row">
                         <span class="info-label">Nova Senha:</span>
@@ -50,7 +61,6 @@
                     </div>
                     <small class="form-text-info">Deixe em branco caso queira manter a mesma senha</small>
                     <div class="info-row">
-                        <!-- Added a specific container class "new-password-requirements-container" -->
                         <small class="password-requirements new-password-requirements-container">
                             <div class="requirement invalid" data-req-type="length">A senha deve conter: 8-20 caracteres</div>
                             <div class="requirement invalid" data-req-type="number">• Pelo menos 1 número</div>
@@ -104,17 +114,62 @@
 
     <%- include('partials/footer') %>
     
-    <script src="/js/password-toggle.js"></script>
-    <script src="/js/cep.js"></script>
-    <script src="/js/senhaRegistro.js"></script>
+
+    <script src="/js/password-toggle.js"></script><!--js para exibir emoji de um olho abrindo e fechando para ocultar ou deixar visivel senha ao digitar-->
+    <script src="/js/senhaRegistro.js"></script><!--js para verificar se a senha atende aos requisitos-->
+    <script src="/js/cep.js"></script><!--js para verificar se o cep é valido, preencehr outras informações e formatar para 00000-000-->
+    <script src="/js/telefone.js"></script><!--js formatar telefone para +55 (código do país) + DDD (2 dígitos) + número (8 ou 9 dígitos)-->
     <script>
+        //redireciona para /user após sucesso
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize for the newPassword field on the edit page
-            initializePasswordValidation('newPassword', '.new-password-requirements-container');
-            
-            // If you also want to validate the 'currentPassword' field (though it doesn't show requirements visually by default)
-            // you could add similar HTML for its requirements and call:
-            // initializePasswordValidation('currentPassword', '.current-password-requirements-container');
+            var successDiv = document.querySelector('.mensagem-feedback.sucesso-feedback');
+            if (successDiv && successDiv.textContent.trim() !== '') {
+                setTimeout(function () {
+                    window.location.href = '/user';
+                }, 1200);
+            }
+
+            //validação de telefone e CEP no submit
+            var form = document.getElementById('editForm');
+            form.addEventListener('submit', function(e) {
+                var tel = form.querySelector('input[name="tel"]');
+                var cep = form.querySelector('input[name="cep"]');
+                var telVal = tel ? tel.value.trim() : '';
+                var cepVal = cep ? cep.value.trim() : '';
+                var telCelPattern = /^\+\d{2} \(\d{2}\) \d{5}-\d{4}$/;
+                var telFixoPattern = /^\+\d{2} \(\d{2}\) \d{4}-\d{4}$/;
+                var cepPattern = /^\d{5}-\d{3}$/;
+
+                //permite campo telefone vazio, mas se preenchido, deve ser válido
+                if (tel && telVal && !(telCelPattern.test(telVal) || telFixoPattern.test(telVal))) {
+                    alert('Telefone incompleto ou inválido. Use o formato +55 (00) 90000-0000 ou +55 (00) 0000-0000.');
+                    tel.focus();
+                    e.preventDefault();
+                    return false;
+                }
+                //permite campo CEP vazio, mas se preenchido, deve ser válido
+                if (cep && cepVal && !cepPattern.test(cepVal)) {
+                    alert('CEP incompleto ou inválido. Use o formato 00000-000.');
+                    cep.focus();
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Preview da imagem de perfil ao selecionar arquivo
+            var input = document.getElementById('profileImageInput');
+            var preview = document.getElementById('profileImagePreview');
+            if (input && preview) {
+                input.addEventListener('change', function (e) {
+                    if (this.files && this.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (ev) {
+                            preview.src = ev.target.result;
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
         });
     </script>
 </body>

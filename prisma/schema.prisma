@@ -22,7 +22,7 @@ model Imagem {
   id        Int      @id @default(autoincrement())
   dados     Bytes
   tipoMime  String
-  createdAt DateTime @default(now()) //prompt: criadoEm
+  createdAt DateTime @default(now())
 
   perfilUsuario   Usuario?   @relation("ImagemPerfilUsuario")
   imagemNoticia   Noticia?   @relation("ImagemNoticia")
@@ -30,24 +30,28 @@ model Imagem {
 }
 
 model Usuario {
-  id               Int             @id @default(autoincrement())
-  email            String          @unique
-  username         String          @db.VarChar(30)
-  senha            String          @db.Text
-  role             Role            @default(USER)
-  biografia        String?         @db.Text
-  localizacao      String?
-  website          String?
-  createdAt        DateTime        @default(now()) //prompt: criadoEm
-  updatedAt        DateTime        @updatedAt //prompt: atualizadoEm
-  acessosNoticias  AcessoNoticia[]
-  senhasAnteriores SenhaAnterior[]
-  noticias         Noticia[]
-  comentarios      Comentario[]
-  favoritos        Favorito[]
-  podeComentar     Boolean         @default(true)
-
-  imagemPerfilId Int?    @unique
+  id                   Int             @id @default(autoincrement())
+  email                String          @unique
+  username             String          @db.VarChar(30)
+  senha                String          @db.Text
+  role                 Role            @default(USER)
+  biografia            String?         @db.Text
+  localizacao          String?
+  website              String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  acessosNoticias      AcessoNoticia[]
+  senhasAnteriores     SenhaAnterior[]
+  noticias             Noticia[]
+  comentarios          Comentario[]
+  favoritos            Favorito[]
+  podeComentar         Boolean         @default(true)
+  tel                  String?         @db.VarChar(20)
+  cep                  String?         @db.VarChar(10)
+  bairro               String?         @db.VarChar(50)
+  endereco             String?         @db.VarChar(100)
+  enderecoComplemento  String?         @db.VarChar(100)
+  imagemPerfilId       Int?            @unique
   imagemPerfil   Imagem? @relation("ImagemPerfilUsuario", fields: [imagemPerfilId], references: [id], onDelete: SetNull)
 }
 
@@ -85,8 +89,8 @@ model Noticia {
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
 
-  imagemId Int?    @unique
-  imagem   Imagem? @relation("ImagemNoticia", fields: [imagemId], references: [id], onDelete: SetNull)
+  imagemId Int?                       @unique
+  imagem   Imagem?                    @relation("ImagemNoticia", fields: [imagemId], references: [id], onDelete: SetNull)
 }
 
 model Tag {
@@ -109,8 +113,8 @@ model Comentario {
   comentarioPai     Comentario?  @relation("RespostasComentario", fields: [comentarioPaiId], references: [id])
   respostas         Comentario[] @relation("RespostasComentario")
   aprovado          Boolean      @default(false)
-  editado           Boolean      @default(false) //ensure this field is present
-  dataEdicao        DateTime? //ensure this field is present
+  editado           Boolean      @default(false)
+  dataEdicao        DateTime?
   upvotes           Int          @default(0)
   downvotes         Int          @default(0)
   sinalizado        Boolean      @default(false)
@@ -125,7 +129,7 @@ model Favorito {
   usuarioId Int
   noticia   Noticia  @relation(fields: [noticiaId], references: [id])
   noticiaId Int
-  createdAt DateTime @default(now()) //prompt: criadoEm
+  createdAt DateTime @default(now())
 
   @@unique([usuarioId, noticiaId])
 }
@@ -137,7 +141,7 @@ model AcessoNoticia {
   usuario   Usuario? @relation(fields: [usuarioId], references: [id])
   usuarioId Int?
   ip        String?  @db.VarChar(45)
-  createdAt DateTime @default(now()) //prompt: criadoEm
+  createdAt DateTime @default(now())
 
   @@index([noticiaId])
   @@index([createdAt])
@@ -148,5 +152,5 @@ model SenhaAnterior {
   senha     String
   createdAt DateTime @default(now())
   usuarioId Int
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade) //added onDelete for consistency
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
