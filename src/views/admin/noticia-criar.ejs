@@ -30,10 +30,10 @@
             <label>
                 <input type="checkbox" name="comentariosAtivados" <%= noticia?.comentariosAtivados !== false ? 'checked' : '' %>> Comentários Ativados
             </label>
-            <label>Categorias:</label>
-            <select name="categorias" multiple size="4">
+            <label>Categoria:</label>
+            <select name="categorias" required>
                 <% categorias.forEach(cat => { %>
-                    <option value="<%= cat.id %>" <%= noticia?.categorias && noticia.categorias.includes(cat.id) ? 'selected' : '' %>><%= cat.nome %></option>
+                    <option value="<%= cat.id %>" <%= noticia?.categorias && Number(noticia.categorias) === cat.id ? 'selected' : '' %>><%= cat.nome %></option>
                 <% }) %>
             </select>
             <label>Tags:</label>

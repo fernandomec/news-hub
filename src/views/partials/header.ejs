@@ -19,16 +19,18 @@
             </a>
         </div>
 
-        <div class="search-container">
-            <input type="text" placeholder="Digite aqui" class="search-input">
+        <!-- barra de pesquisa -->
+        <form class="search-container" action="/noticias/busca" method="get">
+            <input type="text" name="q" placeholder="Digite aqui" class="search-input" value="<%= typeof termoBusca !== 'undefined' ? termoBusca : '' %>">
+
             <button type="submit" class="search-button">
                 <span class="material-symbols-outlined">search</span>
                 <span class="search-button-text">BUSCAR</span>
             </button>
-        </div>
+        </form>
 
         <div class="user-container">
-            <% if (typeof user !== 'undefined' && user) { %>
+            <% if (typeof user !== 'undefined' && user) { %><!-- logado -->
                 <a href="/user" class="user-link">
                     <span class="material-symbols-outlined">person</span>
                     PERFIL
@@ -37,7 +39,7 @@
                     <span class="material-symbols-outlined icone-logout">logout</span>
                     <span class="texto-logout">Sair</span>
                 </a>
-            <% } else { %>
+            <% } else { %><!-- deslogado -->
                 <a href="/login" class="user-link">
                     <span class="material-symbols-outlined">person</span>
                     LOGIN
@@ -47,65 +49,61 @@
         
         <nav class="sidebar">
             <div class="user-container-sidebar">
-                <% if (typeof user !== 'undefined' && user) { %>
+                <% if (typeof user !== 'undefined' && user) { %><!-- aparece quando a role foi user ou undefined -->
+                    <!-- botao user -->
                     <a href="/user" class="user-link">
-                        <span class="material-symbols-outlined">person</span>
-                        PERFIL
+                        <span class="material-symbols-outlined">person</span>PERFIL
                     </a>
+                    <!-- botao admin caso user seja superadmin ou editor -->
                     <% if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' || user.role === 'EDITOR' ) { %>
                         <a href="/admin">Admin</a>
                     <% } %>
+                    <!-- botao logout -->
                     <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
                         <span class="material-symbols-outlined icone-logout">logout</span>
                         <span class="texto-logout">Sair</span>
                     </a>
-                <% } else { %>
+                <% } else { %> <!-- aparece quando a role é nenhum do acima -->
                     <a href="/login" class="user-link-sidebar">
                         <div id="login-maior">
-                            <span class="material-symbols-outlined">person</span>
-                            Acesse sua conta
+                            <span class="material-symbols-outlined">person</span>Acesse sua conta
                         </div>
                         <span id="login-menor">ou cadastre-se grátis</span>
                     </a>
                 <% } %>
             </div>
-            
-
-            <h3>Categorias</h3>
-            <ul>
-                <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
-                    <% categorias.forEach(categoria => { %>
-                        <li><a href="/noticias/categoria/<%= categoria.slug %>"><%= categoria.nome %></a></li>
-                    <% }); %>
-                <% } else { %>
-                    <li>Nenhuma categoria disponível</li>
-                <% } %>
-            </ul>
-            
-
-            <h3>Em Alta</h3>
-            <ul>
-                <% if (typeof noticiasEmAlta !== 'undefined' && noticiasEmAlta.length > 0) { %>
-                    <%// noticiasEmAlta.forEach(noticia => { %>
-                        <%// }); %>
-                <% } else { %>
-                    <li><a href="#">n/a</a></li>
+            <!-- botao home -->
+            <a href="/" class="home-sidebar-link">
+                <span class="material-symbols-outlined">home</span>Início
+            </a>
+            <div class="sidebar-contents">
+                <!-- noticias em alta -->
+                <h3>Em Alta</h3>
+                <ul>
+                    <li><a href="/em-alta">Veja aqui</a></li>
+                </ul>
+                
+                <!-- noticias mais lidas -->
+                <h3>Notícias mais lidas do dia</h3>
+                <ul>
+                    <li><a href="/mais-lidas">Veja aqui</a></li>
+                </ul>
+                <!-- categorias -->
+                <h3>Categorias</h3>
+                <ul>
+                    <% if (typeof categorias !== 'undefined' && categorias.length > 0) { %>
+                        <% categorias.forEach(categoria => { %>
+                            <li><a href="/noticias/categoria/<%= categoria.slug %>"><%= categoria.nome %></a></li>
+                        <% }); %>
+                    <% } else { %>
+                        <li>Nenhuma categoria disponível</li>
                     <% } %>
-            </ul>
-            
-
-            <h3>Notícias mais lidas</h3>
-            <ul>
-                <% if (typeof noticiasMaisLidas !== 'undefined' && noticiasMaisLidas.length > 0) { %>
-                    <%// noticiasMaisLidas.forEach(noticia => { %>
-                        <%// }); %>
-                <% } else { %>
-                    <li><a href="#">n/a</a></li>
-                    <% } %>
-            </ul>
+                </ul>
+            </div>
         </nav>
     </div>
 </header>
 
 <script src="/js/logout.js"></script>
 <script src="/js/sidebar.js"></script>
+<script src="/js/header.js"></script>

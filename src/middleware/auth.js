@@ -7,7 +7,7 @@ const authMiddleware = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return res.redirect('/auth/login');
+    return res.redirect('/login');
   }
 
   try {
@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
     next();
   } catch (error) {
     res.cookie('jwt', '', { maxAge: 1 });
-    res.redirect('/auth/login');
+    res.redirect('/login');
   }
 };
 

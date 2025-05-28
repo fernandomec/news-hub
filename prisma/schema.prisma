@@ -79,7 +79,8 @@ model Noticia {
   visualizacoes       Int             @default(0)
   autor               Usuario         @relation(fields: [autorId], references: [id])
   autorId             Int
-  categorias          Categoria[]
+  categoriaId         Int
+  categoria           Categoria       @relation(fields: [categoriaId], references: [id])
   tags                Tag[]
   comentarios         Comentario[]
   favoritos           Favorito[]

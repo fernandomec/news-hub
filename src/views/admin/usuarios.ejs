@@ -37,7 +37,7 @@
                         <td><%= new Date(u.createdAt).toLocaleDateString('pt-BR') %></td>
                         <td>
                             <a href="/admin/usuarios/<%= u.id %>/editar" class="material-symbols-outlined" title="Editar">edit</a>
-                            <!-- <a href="/admin/usuarios/<%= u.id %>/remover" class="material-symbols-outlined" title="Remover">delete</a> -->
+                            <a href="/admin/usuarios/<%= u.id %>/remover" class="material-symbols-outlined" title="Remover">delete</a>
                         </td>
                     </tr>
                 <% }) %>

@@ -65,7 +65,7 @@
             display: inline-block;
         }
         .comentarios-box {
-            background: #f6f8fa;
+            background: white;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(196,23,12,0.05);
             padding: 2rem 1.5rem 1.5rem 1.5rem;
@@ -187,7 +187,7 @@
             <h2 style="margin-bottom:1em;font-size:1.2em;color:#c4170c;">Comentários</h2>
             <!-- form de comentário -->
             <% if (user && user.podeComentar !== false) { %>
-                <form class="comentario-form" method="POST" action="/noticia/<%= noticia.slug %>/comentar">
+                <form class="comentario-form" method="POST" action="/noticias/categoria/<%= noticia.categoria ? noticia.categoria.slug : 'categoria' %>/<%= noticia.createdAt.getFullYear() %>/<%= (noticia.createdAt.getMonth()+1).toString().padStart(2, '0') %>/<%= noticia.createdAt.getDate().toString().padStart(2, '0') %>/<%= noticia.slug %>/comentar">
                     <% if (mensagemComentario) { %>
                         <div class="mensagem"><%= mensagemComentario %></div>
                     <% } %>
@@ -196,7 +196,7 @@
                 </form>
             <% } else if (!user) { %>
                 <div class="comentario-form">
-                    <a href="/login" class="back-button" style="background:#c4170c;color:#fff;display:inline-block;margin-bottom:1em;">Faça login para comentar</a>
+                    <a href="/login" class="back-button" style="color: #c4170c;display:inline-block;margin-bottom:1em;">Faça login para comentar</a>
                 </div>
             <% } %>
             <% if (noticia.comentarios && noticia.comentarios.length > 0) { %>

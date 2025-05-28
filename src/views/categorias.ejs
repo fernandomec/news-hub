@@ -1,0 +1,22 @@
+<%- include('partials/header', { user: user }) %>
+<main class="main-content">
+    <section class="home-topo">
+        <h2 class="home-titulo">Categorias</h2>
+    </section>
+    <section class="todas-categorias" style="max-width:700px;margin:0 auto;">
+        <ul style="list-style:none;padding:0;">
+            <% if (categorias && categorias.length > 0) { %>
+                <% categorias.forEach(categoria => { %>
+                    <li style="margin-bottom:1em;">
+                        <a href="/noticias/categoria/<%= categoria.slug %>" style="color:#c4170c;font-size:1.2em;text-decoration:none;">
+                            <%= categoria.nome %>
+                        </a>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li>Nenhuma categoria encontrada.</li>
+            <% } %>
+        </ul>
+    </section>
+</main>
+<%- include('partials/footer') %>

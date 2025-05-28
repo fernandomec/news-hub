@@ -5,12 +5,18 @@
     padding: 10px 20px;
     background-color: #c4170c;
     color: white;
-    position: relative;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 60px;
+    box-sizing: border-box;
 }
 
 .logo-container {
     position: absolute;
-    left: 50%;
+    left: 45%;
     top: 50%;
     transform: translate(-50%, -50%);
 }
@@ -77,8 +83,8 @@
 /*sidebar*/
 .sidebar {
     position: fixed;
-    top: 65px;
-    height: calc(100vh - 65px); 
+    top: 60px;
+    height: calc(100vh - 80px); 
     left: -300px;/*iniciar fora*/
     width: 300px;
     background-color: #f4f4f4;
@@ -225,7 +231,23 @@
     flex-direction: column;
 }
 
-/*responsividade*/
+.home-sidebar-link{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: red;
+    padding-top: 20px;
+}
+
+.sidebar-contents{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar-contents h3 {
+    padding-left: 25px;
+}
 
 /*para telas menores*/
 @media (max-width: 1175px) {
@@ -248,6 +270,8 @@
         flex-wrap: wrap;
         padding: 10px;
         justify-content: flex-start;
+        height: 153px;
+        height: auto;
     }
 
     .nav-toggle-label {
@@ -270,7 +294,14 @@
         width: 100%;
         margin-top: 10px;
         margin-left: 0;
+        margin-right: 0;
         max-width: none;
+        position: static;
+        left: auto;
+        transform: none;
+        justify-content: center;
+        height: 40px;
+        align-items: center;
     }
 
     .search-button .search-button-text {
@@ -293,3 +324,4 @@
         justify-content: center;
     }
 }
+

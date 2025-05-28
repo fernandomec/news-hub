@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (enderecoInput) enderecoInput.value = data.logradouro || '';
             }
         } catch (e) {
-            // Silently fail
+            //faz nada
         }
     }
 
-    // Validação inicial ao carregar a página (caso já tenha valor)
+    //ao carregar a página(caso já tenha valor)
     if (cepInput.value) {
         cepInput.value = formatCep(cepInput.value);
         if (cepInput.value.replace(/\D/g, '').length === 8) {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     cepInput.addEventListener('keydown', function (e) {
-        // Impede digitação além do limite
+        //impede digitação além do limite
         const val = this.value.replace(/\D/g, '');
         if (val.length >= 8 && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) && this.selectionStart === this.selectionEnd) {
             e.preventDefault();

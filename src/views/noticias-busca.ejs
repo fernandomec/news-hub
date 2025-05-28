@@ -1,0 +1,55 @@
+<%- include('partials/header', { user: user, termoBusca: termoBusca }) %>
+<link rel="stylesheet" href="/css/home.css">
+<link rel="stylesheet" href="/css/noticias-busca.css">
+<main class="main-content">
+    <section class="home-topo">
+        
+        <h2 class="home-titulo">Resultados da busca <span class="material-symbols-outlined noticias-busca-icon">search</span></h2>
+        <div class="home-subtitulo">
+            <span style="color:gray;">Você pesquisou por:</span>
+            <span style="font-weight:600;color:blue;">"<%= termoBusca %>"</span>
+        </div>
+    </section>
+    <section class="todas-noticias">
+        <div class="noticias-feed">
+            <% if (noticias && noticias.length > 0) { %>
+                <% noticias.forEach(noticia => { %>
+                    <div class="noticia-card">
+                        <a href="/noticias/categoria/<%= noticia.categoria ? noticia.categoria.slug : 'categoria' %>/<%= noticia.createdAt.getFullYear() %>/<%= (noticia.createdAt.getMonth()+1).toString().padStart(2, '0') %>/<%= noticia.createdAt.getDate().toString().padStart(2, '0') %>/<%= noticia.slug %>">
+                            <div class="noticia-img-container">
+                                <% if (noticia.imagemId || (noticia.imagem && noticia.imagem.id)) { %>
+                                    <img src="/imagem/<%= noticia.imagemId || noticia.imagem.id %>" alt="Imagem da notícia">
+                                <% } else { %>
+                                    <img src="/imgs/placeholder_news.png" alt="Sem imagem">
+                                <% } %>
+                            </div>
+                            <div class="noticia-card-content">
+                                <h2 class="noticia-titulo"><%= noticia.titulo %></h2>
+                                <p class="noticia-resumo"><%= noticia.resumo %></p>
+                                <div class="noticia-autor">
+                                    <span class="material-symbols-outlined">person</span>
+                                    <span><%= noticia.autor?.username %></span>
+                                </div>
+                                <div class="noticia-data-publicacao">
+                                    <span class="material-symbols-outlined" style="font-size:1em;color:#888;">calendar_today</span>
+                                    <span style="color:#888;">
+                                        <%= noticia.dataPublicacao 
+                                            ? new Date(noticia.dataPublicacao).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                                            : new Date(noticia.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                                        %>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="noticias-busca-vazio">
+                    <span class="material-symbols-outlined noticias-busca-icon">sentiment_dissatisfied</span>
+                    <p class="noticias-busca-vazio-msg">Nenhuma notícia encontrada para <span style="color:#c4170c;font-weight:600;">"<%= termoBusca %>"</span>.</p>
+                </div>
+            <% } %>
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') %>

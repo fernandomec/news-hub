@@ -430,7 +430,10 @@ body.pagina-usuario {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+    .container-geral-perfil {
+        max-width: 100%;
+    }
     .secao-perfil-visualizacao .rotulo-info {
         width: 150px;
         font-size: 0.95em;
@@ -438,16 +441,16 @@ body.pagina-usuario {
     .secao-perfil-visualizacao .valor-info {
         font-size: 0.95em;
     }
-     .acoes-perfil {
+    .acoes-perfil {
         flex-direction: column;
         gap: 10px;
-    }
-    .botao-acao {
-        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
+    .container-geral-perfil {
+        max-width: 100%;
+    }
     .secao-perfil-visualizacao .linha-info {
         flex-direction: column;
         align-items: flex-start;

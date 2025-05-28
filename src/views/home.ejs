@@ -13,13 +13,18 @@
     <%- include('partials/header') %>
 
     <main class="main-content">
-        <h3>Notícias</h3>
+        <section class="home-topo">
+            <h2 class="home-titulo">Notícias em destaque <span class="material-symbols-outlined home-topo-icon">newspaper</span></h2>
+            <div class="home-subtitulo">
+                <span>Confira as últimas notícias do portal</span>
+            </div>
+        </section>
         <section class="todas-noticias">
             <div class="noticias-feed">
                 <% if (typeof noticias !== 'undefined' && noticias.length > 0) { %>
                     <% noticias.forEach(noticia => { %>
                         <div class="noticia-card">
-                            <a href="/noticia/<%= noticia.slug %>">
+                            <a href="/noticias/categoria/<%= noticia.categoria ? noticia.categoria.slug : 'categoria' %>/<%= noticia.createdAt.getFullYear() %>/<%= (noticia.createdAt.getMonth()+1).toString().padStart(2, '0') %>/<%= noticia.createdAt.getDate().toString().padStart(2, '0') %>/<%= noticia.slug %>">
                                 <div class="noticia-img-container">
                                     <% if (noticia.imagemId || (noticia.imagem && noticia.imagem.id)) { %>
                                         <img src="/imagem/<%= noticia.imagemId || noticia.imagem.id %>" alt="Imagem da notícia">
@@ -30,6 +35,13 @@
                                 <div class="noticia-card-content">
                                     <h2 class="noticia-titulo"><%= noticia.titulo %></h2>
                                     <p class="noticia-resumo"><%= noticia.resumo %></p>
+                                    <% if (noticia.tags && noticia.tags.length > 0) { %>
+                                        <div class="noticia-tags">
+                                            <% noticia.tags.forEach(tag => { %>
+                                                <span class="noticia-tag">#<%= tag.nome %></span>
+                                            <% }) %>
+                                        </div>
+                                    <% } %>
                                     <div class="noticia-autor">
                                         <span class="material-symbols-outlined">person</span>
                                         <span><%= noticia.autor?.username %></span>

@@ -43,9 +43,7 @@
                         <td><%= n.resumo %></td>
                         <td><%= n.publicado ? 'Sim' : 'Não' %></td>
                         <td>
-                            <% if (n.categorias && n.categorias.length > 0) { %>
-                                <%= n.categorias.map(c => c.nome).join(', ') %>
-                            <% } %>
+                            <%= n.categoria ? n.categoria.nome : '' %>
                         </td>
                         <td>
                             <% if (n.tags && n.tags.length > 0) { %>

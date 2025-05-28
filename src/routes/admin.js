@@ -55,7 +55,7 @@ router.get('/noticias', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), asy
         },
         include: {
             autor: { select: { username: true } },
-            categorias: true,
+            categoria: true, // <-- corrigido aqui
             tags: true
         },
         orderBy: { createdAt: 'desc' }
@@ -179,7 +179,7 @@ router.get('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN'])
 router.post('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), upload.single('imagem'), async (req, res) => {
     try {
         const { titulo, conteudo, resumo, publicado, categorias, tags, comentariosAtivados } = req.body;
-        if (!titulo || !conteudo || !resumo) {
+        if (!titulo || !conteudo || !resumo || !categorias) {
             const categoriasList = await prisma.categoria.findMany();
             const tagsList = await prisma.tag.findMany();
             return res.render('admin/noticia-criar', {
@@ -211,7 +211,7 @@ router.post('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']
                 autorId: res.locals.user.id,
                 comentariosAtivados: comentariosAtivados === 'on',
                 imagemId,
-                categorias: categorias ? { connect: (Array.isArray(categorias) ? categorias : [categorias]).map(id => ({ id: Number(id) })) } : undefined,
+                categoriaId: Array.isArray(categorias) ? Number(categorias[0]) : Number(categorias), // agora só aceita uma categoria
                 tags: tags ? { connect: (Array.isArray(tags) ? tags : [tags]).map(id => ({ id: Number(id) })) } : undefined
             }
         });
@@ -233,7 +233,7 @@ router.post('/noticias/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']
 router.get('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
     const noticia = await prisma.noticia.findUnique({
         where: { id: Number(req.params.id) },
-        include: { categorias: true, tags: true, imagem: true }
+        include: { categoria: true, tags: true, imagem: true }
     });
     if (!noticia) return res.redirect('/admin/noticias');
     const categorias = await prisma.categoria.findMany();
@@ -258,9 +258,7 @@ router.post('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_A
             resumo,
             publicado: publicado === 'on',
             comentariosAtivados: comentariosAtivados === 'on',
-            categorias: {
-                set: categorias ? (Array.isArray(categorias) ? categorias : [categorias]).map(id => ({ id: Number(id) })) : []
-            },
+            categoriaId: Array.isArray(categorias) ? Number(categorias[0]) : Number(categorias), // só uma categoria
             tags: {
                 set: tags ? (Array.isArray(tags) ? tags : [tags]).map(id => ({ id: Number(id) })) : []
             }
@@ -297,7 +295,7 @@ router.post('/noticias/:id/editar', authMiddleware, checkRole(['ADMIN', 'SUPER_A
         });
         res.redirect('/admin/noticias');
     } catch (error) {
-        const noticia = await prisma.noticia.findUnique({ where: { id: Number(req.params.id) }, include: { categorias: true, tags: true, imagem: true } });
+        const noticia = await prisma.noticia.findUnique({ where: { id: Number(req.params.id) }, include: { categoria: true, tags: true, imagem: true } });
         const categoriasList = await prisma.categoria.findMany();
         const tagsList = await prisma.tag.findMany();
         res.render('admin/noticia-editar', {

@@ -1,0 +1,25 @@
+<%- include('partials/header', { user: user }) %>
+<main class="main-content">
+    <section class="home-topo">
+        <h2 class="home-titulo">Notícias Mais Lidas</h2>
+    </section>
+    <section class="todas-noticias">
+        <div class="noticias-feed">
+            <% if (noticiasMaisLidas && noticiasMaisLidas.length > 0) { %>
+                <% noticiasMaisLidas.forEach(noticia => { %>
+                    <div class="noticia-card">
+                        <a href="/noticias/categoria/<%= noticia.categoria ? noticia.categoria.slug : 'categoria' %>/<%= noticia.createdAt.getFullYear() %>/<%= (noticia.createdAt.getMonth()+1).toString().padStart(2, '0') %>/<%= noticia.createdAt.getDate().toString().padStart(2, '0') %>/<%= noticia.slug %>">
+                            <div class="noticia-card-content">
+                                <h2 class="noticia-titulo"><%= noticia.titulo %></h2>
+                                <p class="noticia-resumo"><%= noticia.resumo %></p>
+                            </div>
+                        </a>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>Nenhuma notícia mais lida no momento.</p>
+            <% } %>
+        </div>
+    </section>
+</main>
+<%- include('partials/footer') %>

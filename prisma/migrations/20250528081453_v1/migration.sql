@@ -24,6 +24,11 @@ CREATE TABLE "Usuario" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "podeComentar" BOOLEAN NOT NULL DEFAULT true,
+    "tel" VARCHAR(20),
+    "cep" VARCHAR(10),
+    "bairro" VARCHAR(50),
+    "endereco" VARCHAR(100),
+    "enderecoComplemento" VARCHAR(100),
     "imagemPerfilId" INTEGER,
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("id")
@@ -53,6 +58,7 @@ CREATE TABLE "Noticia" (
     "dataPublicacao" TIMESTAMP(3),
     "visualizacoes" INTEGER NOT NULL DEFAULT 0,
     "autorId" INTEGER NOT NULL,
+    "categoriaId" INTEGER NOT NULL,
     "comentariosAtivados" BOOLEAN NOT NULL DEFAULT true,
     "contagemComentarios" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -125,14 +131,6 @@ CREATE TABLE "SenhaAnterior" (
 );
 
 -- CreateTable
-CREATE TABLE "_CategoriaToNoticia" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-
-    CONSTRAINT "_CategoriaToNoticia_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
 CREATE TABLE "_NoticiaToTag" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
@@ -177,9 +175,6 @@ CREATE INDEX "AcessoNoticia_noticiaId_idx" ON "AcessoNoticia"("noticiaId");
 CREATE INDEX "AcessoNoticia_createdAt_idx" ON "AcessoNoticia"("createdAt");
 
 -- CreateIndex
-CREATE INDEX "_CategoriaToNoticia_B_index" ON "_CategoriaToNoticia"("B");
-
--- CreateIndex
 CREATE INDEX "_NoticiaToTag_B_index" ON "_NoticiaToTag"("B");
 
 -- AddForeignKey
@@ -190,6 +185,9 @@ ALTER TABLE "Categoria" ADD CONSTRAINT "Categoria_imagemId_fkey" FOREIGN KEY ("i
 
 -- AddForeignKey
 ALTER TABLE "Noticia" ADD CONSTRAINT "Noticia_autorId_fkey" FOREIGN KEY ("autorId") REFERENCES "Usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Noticia" ADD CONSTRAINT "Noticia_categoriaId_fkey" FOREIGN KEY ("categoriaId") REFERENCES "Categoria"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Noticia" ADD CONSTRAINT "Noticia_imagemId_fkey" FOREIGN KEY ("imagemId") REFERENCES "Imagem"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -217,12 +215,6 @@ ALTER TABLE "AcessoNoticia" ADD CONSTRAINT "AcessoNoticia_usuarioId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "SenhaAnterior" ADD CONSTRAINT "SenhaAnterior_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "Usuario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CategoriaToNoticia" ADD CONSTRAINT "_CategoriaToNoticia_A_fkey" FOREIGN KEY ("A") REFERENCES "Categoria"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CategoriaToNoticia" ADD CONSTRAINT "_CategoriaToNoticia_B_fkey" FOREIGN KEY ("B") REFERENCES "Noticia"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_NoticiaToTag" ADD CONSTRAINT "_NoticiaToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "Noticia"("id") ON DELETE CASCADE ON UPDATE CASCADE;
