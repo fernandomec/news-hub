@@ -18,6 +18,7 @@ async function main() {
             role: 'SUPER_ADMIN',
             biografia: 'Super Admin do sistema',
             podeComentar: true,
+            autenticado: true
         },
     });
     console.log(`usuario super admin ${superAdmin.email} criado`);
@@ -34,6 +35,7 @@ async function main() {
             role: 'ADMIN',
             biografia: 'Admin do portal',
             podeComentar: true,
+            autenticado: true
         },
     });
     console.log(`usuario admin ${admin.email} criado`);
@@ -50,6 +52,7 @@ async function main() {
             role: 'EDITOR',
             biografia: 'Editor',
             podeComentar: true,
+            autenticado: true
         },
     });
     console.log(`usuario editor ${editor.email} criado`);
@@ -66,6 +69,7 @@ async function main() {
             role: 'USER',
             biografia: 'Leitor',
             podeComentar: true,
+            autenticado: true
         },
     });
     console.log(`usuario ${usuario.email} criado`);
@@ -92,18 +96,26 @@ async function main() {
     //criar tags iniciais
     const tags = [
         { nome: 'Eleições 2026', slug: 'eleicoes' },
-        { nome: 'GTA VI', slug: 'urgente' }, //slug 'urgente' might be better as 'gta-vi' or similar for clarity
+        { nome: 'GTA VI', slug: 'gta 6' },
         { nome: 'Inteligencia Artificial', slug: 'ia' },
         { nome: 'Gaming', slug: 'gaming' }
     ];
     //loop para criar tags
     for (const tag of tags) {
-        await prisma.tag.upsert({
-            where: { slug: tag.slug },
-            update: {},
-            create: tag,
-        });
-        console.log(`tag ${tag.nome} criada`);
+        try {
+            await prisma.tag.upsert({
+                where: { slug: tag.slug },
+                update: {},
+                create: tag,
+            });
+            console.log(`tag ${tag.nome} criada`);
+        } catch (e) {
+            if (e.code === 'P2002') {
+                console.log(`tag ${tag.nome} já existe, ignorando...`);
+            } else {
+                throw e;
+            }
+        }
     }
 
     //seed do banco de dados finalizada

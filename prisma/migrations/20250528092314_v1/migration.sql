@@ -30,6 +30,9 @@ CREATE TABLE "Usuario" (
     "endereco" VARCHAR(100),
     "enderecoComplemento" VARCHAR(100),
     "imagemPerfilId" INTEGER,
+    "autenticado" BOOLEAN NOT NULL DEFAULT false,
+    "tokenVerificacao" TEXT,
+    "verificacaoExpiraEm" TIMESTAMP(3),
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("id")
 );

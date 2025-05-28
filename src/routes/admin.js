@@ -436,12 +436,24 @@ router.post('/tags/nova', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), a
     }
 });
 
-// Remover tag
+//remover tag
 router.post('/tags/:id/apagar', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
     try {
         await prisma.tag.delete({ where: { id: Number(req.params.id) } });
     } catch (e) {}
     res.redirect('/admin/tags');
+});
+
+//remover usuário (GET)
+router.get('/usuarios/:id/remover', authMiddleware, checkRole(['ADMIN', 'SUPER_ADMIN']), async (req, res) => {
+    const usuario = await prisma.usuario.findUnique({ where: { id: Number(req.params.id) } });
+    if (!usuario) return res.redirect('/admin/usuarios');
+    //remove imagem de perfil se existir
+    if (usuario.imagemPerfilId) {
+        await prisma.imagem.delete({ where: { id: usuario.imagemPerfilId } }).catch(() => {});
+    }
+    await prisma.usuario.delete({ where: { id: usuario.id } });
+    res.redirect('/admin/usuarios');
 });
 
 module.exports = router;

@@ -53,6 +53,10 @@ model Usuario {
   enderecoComplemento  String?         @db.VarChar(100)
   imagemPerfilId       Int?            @unique
   imagemPerfil   Imagem? @relation("ImagemPerfilUsuario", fields: [imagemPerfilId], references: [id], onDelete: SetNull)
+
+  autenticado         Boolean   @default(false)
+  tokenVerificacao    String?   // token para verificação de email
+  verificacaoExpiraEm DateTime? // data de expiração do token de verificação
 }
 
 model Categoria {
